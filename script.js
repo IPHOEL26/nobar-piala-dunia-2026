@@ -914,4 +914,206 @@ if (filterMatch) filterMatch.onchange = renderMatches;
 const printBtn = el("print") || el("printBtn");
 if (printBtn) printBtn.onclick = () => window.print();
 
+
+
+/* =====================================================
+   PATCH AMAN 2026
+   Bendera otomatis dan bracket simetris.
+   Ditempatkan sebelum render awal supaya fungsi lama tetap aman.
+===================================================== */
+
+const teamFlagCodes = {
+  "Meksiko":"mx",
+  "Afrika Selatan":"za",
+  "Korea Selatan":"kr",
+  "Ceko":"cz",
+  "Kanada":"ca",
+  "Bosnia dan Herzegovina":"ba",
+  "Qatar":"qa",
+  "Swiss":"ch",
+  "Brasil":"br",
+  "Maroko":"ma",
+  "Haiti":"ht",
+  "Skotlandia":"gb-sct",
+  "Amerika Serikat":"us",
+  "Paraguay":"py",
+  "Australia":"au",
+  "Turki":"tr",
+  "Jerman":"de",
+  "Curaçao":"cw",
+  "Pantai Gading":"ci",
+  "Ekuador":"ec",
+  "Belanda":"nl",
+  "Jepang":"jp",
+  "Swedia":"se",
+  "Tunisia":"tn",
+  "Belgia":"be",
+  "Mesir":"eg",
+  "Iran":"ir",
+  "Selandia Baru":"nz",
+  "Spanyol":"es",
+  "Cape Verde":"cv",
+  "Arab Saudi":"sa",
+  "Uruguay":"uy",
+  "Prancis":"fr",
+  "Senegal":"sn",
+  "Irak":"iq",
+  "Norwegia":"no",
+  "Argentina":"ar",
+  "Aljazair":"dz",
+  "Austria":"at",
+  "Yordania":"jo",
+  "Portugal":"pt",
+  "RD Kongo":"cd",
+  "Uzbekistan":"uz",
+  "Kolombia":"co",
+  "Inggris":"gb-eng",
+  "Kroasia":"hr",
+  "Ghana":"gh",
+  "Panama":"pa"
+};
+
+function safeText(value){
+  return String(value || "")
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+
+function flag(team){
+  const code = teamFlagCodes[team] || teamsData[team]?.[0];
+  if (!code || String(code).includes("🇦")) return "";
+
+  return `<img class="flag-img" src="https://flagcdn.com/w40/${code}.png" alt="${safeText(team)}" loading="lazy" onerror="this.style.display='none'">`;
+}
+
+function fmt(team){
+  if (!team) return "Menunggu";
+
+  if (teamFlagCodes[team] || teamsData[team]){
+    return `<span class="team-display">${flag(team)}<span>${safeText(team)}</span></span>`;
+  }
+
+  return safeText(team);
+}
+
+function matchLoser(match){
+  if (!match) return "";
+
+  if (match.as !== "" && match.bs !== ""){
+    const scoreA = Number(match.as);
+    const scoreB = Number(match.bs);
+
+    if (scoreA > scoreB) return match.b;
+    if (scoreB > scoreA) return match.a;
+  }
+
+  if (match.winner && match.a && match.b){
+    if (match.winner === match.a) return match.b;
+    if (match.winner === match.b) return match.a;
+  }
+
+  return "";
+}
+
+function propagateKO(){
+  const map = [
+    ["R16-1","R32-1","R32-2"],
+    ["R16-2","R32-3","R32-4"],
+    ["R16-3","R32-5","R32-6"],
+    ["R16-4","R32-7","R32-8"],
+
+    ["R16-5","R32-9","R32-10"],
+    ["R16-6","R32-11","R32-12"],
+    ["R16-7","R32-13","R32-14"],
+    ["R16-8","R32-15","R32-16"],
+
+    ["QF-1","R16-1","R16-2"],
+    ["QF-2","R16-3","R16-4"],
+    ["QF-3","R16-5","R16-6"],
+    ["QF-4","R16-7","R16-8"],
+
+    ["SF-1","QF-1","QF-2"],
+    ["SF-2","QF-3","QF-4"],
+
+    ["FINAL","SF-1","SF-2"]
+  ];
+
+  map.forEach(([to, fromA, fromB]) => {
+    if (!state.knockout[to]){
+      state.knockout[to] = {a:"", b:"", as:"", bs:"", winner:""};
+    }
+
+    const target = state.knockout[to];
+
+    if (!target.winner){
+      target.a = state.knockout[fromA]?.winner || `Pemenang ${fromA}`;
+      target.b = state.knockout[fromB]?.winner || `Pemenang ${fromB}`;
+    }
+  });
+
+  if (!state.knockout.BRONZE){
+    state.knockout.BRONZE = {a:"", b:"", as:"", bs:"", winner:""};
+  }
+
+  if (!state.knockout.BRONZE.winner){
+    state.knockout.BRONZE.a = matchLoser(state.knockout["SF-1"]) || "Kalah SF-1";
+    state.knockout.BRONZE.b = matchLoser(state.knockout["SF-2"]) || "Kalah SF-2";
+  }
+}
+
+function bracketColumn(title, ids, cls, side){
+  return `
+    <div class="round-col clean path-${side}">
+      <h4>${title}</h4>
+      <div class="round-stack cards-${ids.length}">
+        ${ids.map(id => koCard(id, cls)).join("")}
+      </div>
+    </div>
+  `;
+}
+
+function renderBracket(){
+  const bracketBox = typeof el === "function" ? (el("bracketBox") || el("bracketWrap")) : (document.getElementById("bracketBox") || document.getElementById("bracketWrap"));
+  if (!bracketBox) return;
+
+  fillR32();
+
+  bracketBox.className = "bracket-stage";
+
+  bracketBox.innerHTML = `
+    <div class="bracket-board">
+      <div class="bracket-title">
+        <div class="path">PATHWAY 1</div>
+        <h3>🏆 BAGAN GUGUR</h3>
+        <div class="path right">PATHWAY 2</div>
+      </div>
+
+      <div class="bracket-grid bracket-grid-clean">
+        ${bracketColumn("R32", ["R32-1","R32-2","R32-3","R32-4","R32-5","R32-6","R32-7","R32-8"], "r32", "left")}
+        ${bracketColumn("R16", ["R16-1","R16-2","R16-3","R16-4"], "r16", "left")}
+        ${bracketColumn("QF", ["QF-1","QF-2"], "qf", "left")}
+        ${bracketColumn("SF", ["SF-1"], "sf", "left")}
+
+        <div class="final-col clean">
+          <div class="trophy-box">
+            <div class="big">🏆</div>
+            <b>FIFA WORLD CUP 2026</b>
+            <span>IPHOEL EDUMATH</span>
+          </div>
+          ${koCard("FINAL", "final")}
+          ${koCard("BRONZE", "bronze")}
+        </div>
+
+        ${bracketColumn("SF", ["SF-2"], "sf", "right")}
+        ${bracketColumn("QF", ["QF-3","QF-4"], "qf", "right")}
+        ${bracketColumn("R16", ["R16-5","R16-6","R16-7","R16-8"], "r16", "right")}
+        ${bracketColumn("R32", ["R32-9","R32-10","R32-11","R32-12","R32-13","R32-14","R32-15","R32-16"], "r32", "right")}
+      </div>
+    </div>
+  `;
+}
+
 render();
