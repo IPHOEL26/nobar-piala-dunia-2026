@@ -1,91 +1,518 @@
 <!doctype html>
 <html lang="id">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Nobar Piala Dunia 2026 - IPHOEL EDUMATH</title>
-<link rel="stylesheet" href="style.css"/>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Nobar Piala Dunia 2026 | IPHOEL EDUMATH</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Segoe UI,Arial,sans-serif;background:#061224;color:#eef6ff}
+.app{display:flex;min-height:100vh}
+.side{width:280px;background:#030914;padding:20px;border-right:1px solid #1d3557;position:sticky;top:0;height:100vh}
+.logo{display:flex;gap:12px;align-items:center;margin-bottom:22px}
+.logo-icon{width:52px;height:52px;border-radius:18px;background:linear-gradient(135deg,#38d9ff,#ffd24d);display:grid;place-items:center;font-size:28px}
+.logo h1{font-size:20px;margin:0}
+.logo p{margin:3px 0;color:#9db3d0;font-weight:700}
+.nav{width:100%;padding:13px 14px;margin:6px 0;border:0;border-radius:14px;background:transparent;color:#c7d7ee;text-align:left;font-weight:700;cursor:pointer}
+.nav.active,.nav:hover{background:linear-gradient(90deg,#1687ff,#38d9ff);color:white}
+.note{margin-top:20px;background:#0b1d38;border:1px solid #1d3557;border-radius:16px;padding:14px;color:#c7d7ee;line-height:1.5}
+.main{flex:1;padding:24px;max-width:calc(100vw - 280px)}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.top small{color:#38d9ff;font-weight:800;letter-spacing:.08em}
+.top h2{font-size:32px;margin:4px 0 0}
+button,input,select,textarea{font-family:inherit}
+button{border:0;border-radius:12px;padding:10px 14px;font-weight:800;cursor:pointer;background:#1d3557;color:white}
+.primary{background:linear-gradient(135deg,#1687ff,#38d9ff)}
+.danger{background:#ff4968}
+.page{display:none}
+.page.active{display:block}
+.hero{display:grid;grid-template-columns:1fr 180px;gap:18px;background:linear-gradient(135deg,#0d3269,#081a33);border:1px solid #1d3557;border-radius:24px;padding:26px;margin-bottom:18px}
+.hero h3{font-size:38px;line-height:1.05;margin:10px 0}
+.hero p{color:#c2d2ea;font-size:17px}
+.tag{display:inline-block;background:#ffd24d22;color:#ffd24d;padding:7px 11px;border-radius:999px;font-weight:900}
+.cup{font-size:100px;display:grid;place-items:center}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:16px}
+.card,.panel,.group,.match,.slot{background:#0b1d38;border:1px solid #1d3557;border-radius:18px;padding:16px}
+.card span{color:#9db3d0}
+.card b{display:block;font-size:34px;margin-top:6px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.panel h3{margin:0 0 12px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{background:#10284d;border:1px solid #1d3557;border-radius:999px;padding:8px 11px;font-weight:800}
+.timeline p{display:flex;justify-content:space-between;border-bottom:1px solid #1d3557;margin:0;padding:9px 0}
+.timeline span{color:#9db3d0}
+.toolbar{display:flex;gap:10px;margin-bottom:14px}
+input,select,textarea{width:100%;background:#07182e;color:white;border:1px solid #1d3557;border-radius:12px;padding:12px;font-size:15px}
+textarea{min-height:90px}
+.groups{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:14px}
+.group{padding:0;overflow:hidden}
+.ghead{display:flex;justify-content:space-between;padding:14px 16px;background:linear-gradient(90deg,#1687ff55,#38d9ff22)}
+.ghead h3{margin:0}
+.team{display:grid;grid-template-columns:1fr auto;gap:8px;padding:11px 14px;border-top:1px solid #1d3557}
+.team.qualified{background:rgba(32,201,151,.14)}
+.team.eliminated{background:rgba(255,73,104,.14);opacity:.75}
+.team.favorite .name:before{content:"⭐ "}
+.name{font-weight:900}
+.mini{font-size:12px;color:#9db3d0;margin-top:3px}
+.btns{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end}
+.b{padding:7px 9px;border-radius:999px;font-size:12px}
+.q{background:#20c997}
+.e{background:#ff4968}
+.a{background:#4b5f7a}
+.f{background:#2d3c55}
+.matches{display:grid;gap:12px}
+.meta{display:flex;justify-content:space-between;color:#9db3d0;font-weight:700;margin-bottom:10px}
+.vs{display:grid;grid-template-columns:1fr 120px 1fr;gap:10px;align-items:center}
+.sideTeam{background:#10284d;border:1px solid #1d3557;border-radius:16px;padding:13px}
+.sideTeam h4{margin:0 0 9px;font-size:20px}
+.score{display:flex;align-items:center;justify-content:center;gap:6px}
+.score input{width:45px;text-align:center;padding:9px 3px}
+.vst{color:#ffd24d;font-weight:900}
+.info{background:#ffd24d22;border:1px solid #ffd24d66;color:#ffeaa2;padding:13px 15px;border-radius:16px;margin-bottom:14px}
+.bracket{display:flex;gap:14px;overflow:auto;padding-bottom:16px}
+.round{min-width:250px}
+.round h3{text-align:center;color:#38d9ff;margin:0 0 10px}
+.slot{margin-bottom:10px;padding:11px}
+.slot label{font-size:12px;color:#9db3d0;font-weight:900}
+.slot .row{display:grid;grid-template-columns:1fr 42px;gap:7px;margin-top:7px}
+.teamline{padding:9px;background:#10284d;border-radius:11px;font-weight:800}
+.scoreSmall{width:42px;text-align:center;padding:7px 2px}
+.slot button{width:100%;margin-top:8px;padding:8px;background:#164d3f;color:#a4ffdb;border:1px solid #20c99755}
+label{display:block;margin:11px 0;color:#c7d7ee;font-weight:800}
+.watchItem{background:#10284d;border:1px solid #1d3557;border-radius:16px;padding:13px;margin-bottom:10px}
+.watchItem h4{margin:0 0 6px}
+.watchItem p{margin:4px 0;color:#9db3d0}
+.dataBtns{display:flex;gap:10px;flex-wrap:wrap}
+@media(max-width:900px){
+.app{display:block}
+.side{width:100%;height:auto;position:relative}
+.main{max-width:none;padding:15px}
+.hero,.grid2{grid-template-columns:1fr}
+.cards{grid-template-columns:repeat(2,1fr)}
+.vs{grid-template-columns:1fr}
+.score{order:2}
+.top{display:block}
+.toolbar{display:block}
+.toolbar>*{margin-bottom:9px}
+}
+</style>
 </head>
 <body>
-<div class="shell">
-  <aside class="side">
-    <div class="logo"><div>⚽</div><span>Nobar WC 2026<br><b>IPHOEL EDUMATH</b></span></div>
-    <button class="nav on" data-page="home">🏠 Dashboard</button>
-    <button class="nav" data-page="groups">🌍 Negara & Grup</button>
-    <button class="nav" data-page="matches">📅 Jadwal & Skor</button>
-    <button class="nav" data-page="bracket">🏆 Bagan Gugur</button>
-    <button class="nav" data-page="party">🍿 Jadwal Nobar</button>
-    <button class="nav" data-page="data">💾 Data</button>
-    <p class="hint">Aplikasi offline untuk pantau Piala Dunia bareng keluarga.</p>
-  </aside>
-  <main>
-    <header>
-      <div><small>WORLD CUP FAMILY TRACKER</small><h1 id="title">Dashboard</h1></div>
-      <div class="topbtn"><button onclick="backup()">Export</button><button onclick="print()">Cetak</button></div>
-    </header>
-
-    <section id="home" class="page show">
-      <div class="hero">
-        <div><b class="badge">Piala Dunia 2026</b><h2>Pusat Pantauan Nobar Keluarga</h2>
-        <p>Isi skor, tandai negara lolos/gugur, simpan tim favorit, atur agenda nobar, dan pantau bagan gugur.</p>
-        <button onclick="go('matches')">Mulai Isi Skor</button><button class="light" onclick="go('party')">Buat Nobar</button></div>
-        <div class="cup">🏆<span>Final<br>19 Juli 2026</span></div>
-      </div>
-      <div class="stats">
-        <div><span>Total Negara</span><b id="sTeams">48</b></div>
-        <div><span>Lolos</span><b id="sQ">0</b></div>
-        <div><span>Gugur</span><b id="sE">0</b></div>
-        <div><span>Agenda Nobar</span><b id="sN">0</b></div>
-      </div>
-      <div class="grid2">
-        <div class="card"><h3>⭐ Tim Favorit</h3><div id="favBox" class="chips"></div></div>
-        <div class="card"><h3>🗓️ Fase Turnamen</h3><div class="timeline">
-          <p><b>Fase Grup</b><span>11 - 27 Juni 2026</span></p><p><b>32 Besar</b><span>28 Juni - 3 Juli 2026</span></p>
-          <p><b>16 Besar</b><span>4 - 7 Juli 2026</span></p><p><b>Perempat Final</b><span>9 - 12 Juli 2026</span></p>
-          <p><b>Semifinal</b><span>15 - 16 Juli 2026</span></p><p><b>Tempat Ketiga</b><span>18 Juli 2026</span></p><p><b>Final</b><span>19 Juli 2026</span></p>
-        </div></div>
-      </div>
-    </section>
-
-    <section id="groups" class="page">
-      <div class="tools"><input id="search" placeholder="Cari negara..."/><select id="filter"><option value="all">Semua status</option><option value="qualified">Lolos</option><option value="eliminated">Gugur</option><option value="active">Aktif</option><option value="favorite">Favorit</option></select></div>
-      <div id="groupGrid" class="groupgrid"></div>
-    </section>
-
-    <section id="matches" class="page">
-      <div class="tools"><select id="gFilter"><option value="all">Semua grup</option></select><select id="mFilter"><option value="all">Semua pertandingan</option><option value="done">Sudah ada skor</option><option value="pending">Belum ada skor</option></select></div>
-      <div id="matchList"></div>
-    </section>
-
-    <section id="bracket" class="page">
-      <div class="note">Bagan gugur manual. Isi nama tim sesuai hasil terbaru, lalu klik “Lolos”.</div>
-      <div id="bracketBox" class="bracket"></div>
-    </section>
-
-    <section id="party" class="page">
-      <div class="grid2">
-        <form id="partyForm" class="card form">
-          <h3>Tambah Agenda Nobar</h3>
-          <label>Judul<input id="pTitle" required placeholder="Nobar Final bareng keluarga"/></label>
-          <label>Tanggal & Jam<input id="pDate" required type="datetime-local"/></label>
-          <label>Lokasi<input id="pPlace" placeholder="Rumah, ruang keluarga"/></label>
-          <label>Catatan<textarea id="pNote" placeholder="Cemilan, proyektor, speaker, jersey"></textarea></label>
-          <button>Simpan</button>
-        </form>
-        <div class="card"><h3>Daftar Nobar</h3><div id="partyList"></div></div>
-      </div>
-    </section>
-
-    <section id="data" class="page">
-      <div class="card"><h3>Kelola Data</h3><p>Semua perubahan tersimpan di browser laptop ini.</p>
-        <button onclick="backup()">Download Backup JSON</button>
-        <label class="import">Import JSON<input id="importFile" type="file" accept=".json"/></label>
-        <button class="danger" onclick="resetAll()">Reset Semua</button>
-      </div>
-      <div class="card"><h3>Catatan</h3><p>Data grup dan fase turnamen mengikuti data yang kawan berikan. Jika data resmi berubah, aplikasi bisa diperbarui lagi.</p></div>
-    </section>
-  </main>
+<div class="app">
+<aside class="side">
+<div class="logo">
+<div class="logo-icon">⚽</div>
+<div><h1>Nobar World Cup</h1><p>IPHOEL EDUMATH</p></div>
 </div>
-<script src="script.js"></script>
+<button class="nav active" data-page="home">🏠 Dashboard</button>
+<button class="nav" data-page="groups">🌍 Grup & Klasemen</button>
+<button class="nav" data-page="matches">📅 Jadwal & Skor</button>
+<button class="nav" data-page="bracket">🏆 Bagan Gugur</button>
+<button class="nav" data-page="watch">🍿 Jadwal Nobar</button>
+<button class="nav" data-page="data">💾 Data</button>
+<div class="note"><b>WIT Maluku Tengah</b><br>Semua jadwal tampil dalam Waktu Indonesia Timur.</div>
+</aside>
+
+<main class="main">
+<header class="top">
+<div><small>FIFA World Cup 2026 Family Tracker</small><h2 id="title">Dashboard</h2></div>
+<div><button onclick="window.print()">Cetak</button> <button onclick="render()">Refresh</button></div>
+</header>
+
+<section id="home" class="page active">
+<div class="hero">
+<div>
+<span class="tag">APP NOBAR KELUARGA</span>
+<h3>Pantau Piala Dunia 2026 dengan tampilan keren.</h3>
+<p>Isi skor, lihat klasemen otomatis, tandai lolos/gugur, dan pantau bagan gugur sampai final.</p>
+<button class="primary" onclick="jump('matches')">Isi Skor</button>
+<button onclick="jump('bracket')">Lihat Bagan</button>
+</div>
+<div class="cup">🏆</div>
+</div>
+
+<div class="cards">
+<div class="card"><span>Total Negara</span><b id="stTeams">48</b></div>
+<div class="card"><span>Negara Lolos</span><b id="stQ">0</b></div>
+<div class="card"><span>Negara Gugur</span><b id="stE">0</b></div>
+<div class="card"><span>Agenda Nobar</span><b id="stN">0</b></div>
+</div>
+
+<div class="grid2">
+<div class="panel"><h3>Tim Favorit</h3><div id="favList" class="chips"></div></div>
+<div class="panel"><h3>Fase Turnamen</h3>
+<div class="timeline">
+<p><b>Fase Grup</b><span>11-27 Juni</span></p>
+<p><b>32 Besar</b><span>28 Juni-3 Juli</span></p>
+<p><b>16 Besar</b><span>4-7 Juli</span></p>
+<p><b>Perempat Final</b><span>9-12 Juli</span></p>
+<p><b>Semifinal</b><span>15-16 Juli</span></p>
+<p><b>Final</b><span>19 Juli 2026</span></p>
+</div>
+</div>
+</div>
+</section>
+
+<section id="groups" class="page">
+<div class="toolbar">
+<input id="searchTeam" placeholder="Cari negara...">
+<select id="filterStatus">
+<option value="all">Semua status</option>
+<option value="active">Masih aktif</option>
+<option value="qualified">Lolos</option>
+<option value="eliminated">Gugur</option>
+<option value="favorite">Favorit</option>
+</select>
+</div>
+<div id="groupGrid" class="groups"></div>
+</section>
+
+<section id="matches" class="page">
+<div class="toolbar">
+<select id="filterGroup"><option value="all">Semua grup</option></select>
+<select id="filterMatch">
+<option value="all">Semua pertandingan</option>
+<option value="done">Sudah ada skor</option>
+<option value="pending">Belum ada skor</option>
+</select>
+</div>
+<div id="matchList" class="matches"></div>
+</section>
+
+<section id="bracket" class="page">
+<div class="info"><b>Bagan otomatis:</b> 32 besar diisi dari klasemen grup. Pemenang babak gugur bisa dipilih dari skor atau diketik manual.</div>
+<div id="bracketBox" class="bracket"></div>
+</section>
+
+<section id="watch" class="page">
+<div class="grid2">
+<form id="watchForm" class="panel">
+<h3>Tambah Agenda Nobar</h3>
+<label>Judul<input id="watchTitle" required placeholder="Nobar Final bareng keluarga"></label>
+<label>Tanggal dan Jam WIT<input id="watchDate" type="datetime-local" required></label>
+<label>Lokasi<input id="watchPlace" placeholder="Ruang keluarga"></label>
+<label>Catatan<textarea id="watchNote" placeholder="Cemilan, proyektor, speaker, dan lain-lain"></textarea></label>
+<button class="primary">Simpan Nobar</button>
+</form>
+<div class="panel"><h3>Daftar Agenda</h3><div id="watchList"></div></div>
+</div>
+</section>
+
+<section id="data" class="page">
+<div class="panel">
+<h3>Backup dan Restore Data</h3>
+<p>Data skor, favorit, status, bracket, dan agenda nobar tersimpan di browser. Gunakan backup untuk pindah ke HP/laptop lain.</p>
+<div class="dataBtns">
+<button class="primary" id="backup">Download Backup</button>
+<label class="upload">Import Backup <input type="file" id="restore" accept=".json"></label>
+<button class="danger" id="resetAll">Reset Semua</button>
+</div>
+</div>
+</section>
+</main>
+</div>
+
+<script>
+const teamsData={
+"Meksiko":["🇲🇽","A"],"Afrika Selatan":["🇿🇦","A"],"Korea Selatan":["🇰🇷","A"],"Ceko":["🇨🇿","A"],
+"Kanada":["🇨🇦","B"],"Bosnia dan Herzegovina":["🇧🇦","B"],"Qatar":["🇶🇦","B"],"Swiss":["🇨🇭","B"],
+"Brasil":["🇧🇷","C"],"Maroko":["🇲🇦","C"],"Haiti":["🇭🇹","C"],"Skotlandia":["🏴","C"],
+"Amerika Serikat":["🇺🇸","D"],"Paraguay":["🇵🇾","D"],"Australia":["🇦🇺","D"],"Turki":["🇹🇷","D"],
+"Jerman":["🇩🇪","E"],"Curaçao":["🇨🇼","E"],"Pantai Gading":["🇨🇮","E"],"Ekuador":["🇪🇨","E"],
+"Belanda":["🇳🇱","F"],"Jepang":["🇯🇵","F"],"Swedia":["🇸🇪","F"],"Tunisia":["🇹🇳","F"],
+"Belgia":["🇧🇪","G"],"Mesir":["🇪🇬","G"],"Iran":["🇮🇷","G"],"Selandia Baru":["🇳🇿","G"],
+"Spanyol":["🇪🇸","H"],"Cape Verde":["🇨🇻","H"],"Arab Saudi":["🇸🇦","H"],"Uruguay":["🇺🇾","H"],
+"Prancis":["🇫🇷","I"],"Senegal":["🇸🇳","I"],"Irak":["🇮🇶","I"],"Norwegia":["🇳🇴","I"],
+"Argentina":["🇦🇷","J"],"Aljazair":["🇩🇿","J"],"Austria":["🇦🇹","J"],"Yordania":["🇯🇴","J"],
+"Portugal":["🇵🇹","K"],"RD Kongo":["🇨🇩","K"],"Uzbekistan":["🇺🇿","K"],"Kolombia":["🇨🇴","K"],
+"Inggris":["🏴","L"],"Kroasia":["🇭🇷","L"],"Ghana":["🇬🇭","L"],"Panama":["🇵🇦","L"]
+};
+
+const groups={};
+Object.entries(teamsData).forEach(([t,[fl,g]])=>{
+ if(!groups[g]) groups[g]=[];
+ groups[g].push(t);
+});
+
+const pageName={
+home:"Dashboard",
+groups:"Grup & Klasemen",
+matches:"Jadwal & Skor",
+bracket:"Bagan Gugur",
+watch:"Jadwal Nobar",
+data:"Data"
+};
+
+function newState(){
+ const s={teams:{},matches:[],knockout:{},watch:[]};
+ Object.keys(teamsData).forEach(t=>s.teams[t]={status:"active",favorite:false});
+ s.matches=makeMatches();
+ makeKOIds().forEach(id=>s.knockout[id]={a:"",b:"",as:"",bs:"",winner:""});
+ return s;
+}
+
+function makeMatches(){
+ const pairs=[[0,1],[2,3],[0,2],[1,3],[0,3],[1,2]];
+ const arr=[];
+ let n=0;
+ const base=new Date("2026-06-11T20:00:00+09:00");
+ Object.entries(groups).forEach(([g,ts])=>{
+  pairs.forEach((p,i)=>{
+   let d=new Date(base.getTime()+n*6*3600000);
+   arr.push({id:`G${g}-${i+1}`,stage:"Fase Grup",group:g,date:d.toISOString(),home:ts[p[0]],away:ts[p[1]],hs:"",as:""});
+   n++;
+  });
+ });
+ return arr;
+}
+
+function makeKOIds(){
+ return [...Array(16)].map((_,i)=>`R32-${i+1}`)
+ .concat([...Array(8)].map((_,i)=>`R16-${i+1}`))
+ .concat([...Array(4)].map((_,i)=>`QF-${i+1}`))
+ .concat(["SF-1","SF-2","FINAL"]);
+}
+
+let state;
+try{state=JSON.parse(localStorage.getItem("wc26-iphoel-single"))||newState();}
+catch{state=newState();}
+
+function save(){
+ localStorage.setItem("wc26-iphoel-single",JSON.stringify(state));
+ render();
+}
+
+function flag(t){return teamsData[t]?.[0]||"🏳️";}
+function fmt(t){return `${flag(t)} ${t}`;}
+
+function wit(iso){
+ return new Intl.DateTimeFormat("id-ID",{timeZone:"Asia/Jayapura",dateStyle:"medium",timeStyle:"short"}).format(new Date(iso))+" WIT";
+}
+
+function jump(id){
+ document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+ document.getElementById(id).classList.add("active");
+ document.querySelectorAll(".nav").forEach(b=>b.classList.toggle("active",b.dataset.page===id));
+ document.getElementById("title").textContent=pageName[id];
+}
+
+document.querySelectorAll(".nav").forEach(b=>b.onclick=()=>jump(b.dataset.page));
+
+function standings(){
+ const tb={};
+ Object.keys(groups).forEach(g=>tb[g]=groups[g].map(t=>({team:t,p:0,w:0,d:0,l:0,gf:0,ga:0,gd:0,pts:0})));
+ const find=(g,t)=>tb[g].find(x=>x.team===t);
+ state.matches.forEach(m=>{
+  if(m.hs===""||m.as==="") return;
+  let h=find(m.group,m.home), a=find(m.group,m.away), hs=+m.hs, as=+m.as;
+  h.p++; a.p++;
+  h.gf+=hs; h.ga+=as; a.gf+=as; a.ga+=hs;
+  h.gd=h.gf-h.ga; a.gd=a.gf-a.ga;
+  if(hs>as){h.w++;a.l++;h.pts+=3;}
+  else if(hs<as){a.w++;h.l++;a.pts+=3;}
+  else{h.d++;a.d++;h.pts++;a.pts++;}
+ });
+ Object.keys(tb).forEach(g=>tb[g].sort((x,y)=>y.pts-x.pts||y.gd-x.gd||y.gf-x.gf||x.team.localeCompare(y.team)));
+ return tb;
+}
+
+function autoQ(){
+ let st=standings();
+ Object.values(state.teams).forEach(t=>{if(t.status!=="eliminated") t.status="active";});
+ Object.keys(st).forEach(g=>st[g].slice(0,2).forEach(x=>state.teams[x.team].status="qualified"));
+ Object.keys(st).map(g=>st[g][2]).sort((a,b)=>b.pts-a.pts||b.gd-a.gd||b.gf-a.gf).slice(0,8).forEach(x=>state.teams[x.team].status="qualified");
+ localStorage.setItem("wc26-iphoel-single",JSON.stringify(state));
+}
+
+function qualifiers(){
+ let st=standings(),f={},s={};
+ Object.keys(st).forEach(g=>{f[g]=st[g][0]?.team||"";s[g]=st[g][1]?.team||"";});
+ let th=Object.keys(st).map(g=>st[g][2]).sort((a,b)=>b.pts-a.pts||b.gd-a.gd||b.gf-a.gf).slice(0,8).map(x=>x.team);
+ return{f,s,th};
+}
+
+function fillR32(){
+ let q=qualifiers();
+ let p=[
+ [q.f.A,q.s.B],[q.f.C,q.s.D],[q.f.E,q.s.F],[q.f.G,q.s.H],
+ [q.f.I,q.s.J],[q.f.K,q.s.L],[q.f.B,q.s.A],[q.f.D,q.s.C],
+ [q.f.F,q.s.E],[q.f.H,q.s.G],[q.f.J,q.s.I],[q.f.L,q.s.K],
+ [q.th[0]||"Peringkat 3 terbaik",q.th[1]||"Peringkat 3 terbaik"],
+ [q.th[2]||"Peringkat 3 terbaik",q.th[3]||"Peringkat 3 terbaik"],
+ [q.th[4]||"Peringkat 3 terbaik",q.th[5]||"Peringkat 3 terbaik"],
+ [q.th[6]||"Peringkat 3 terbaik",q.th[7]||"Peringkat 3 terbaik"]
+ ];
+ p.forEach((x,i)=>{
+  let k=state.knockout[`R32-${i+1}`];
+  if(!k.winner){k.a=x[0]||"";k.b=x[1]||"";}
+ });
+ propKO();
+}
+
+function propKO(){
+ [
+ ["R16-1","R32-1","R32-2"],["R16-2","R32-3","R32-4"],["R16-3","R32-5","R32-6"],["R16-4","R32-7","R32-8"],
+ ["R16-5","R32-9","R32-10"],["R16-6","R32-11","R32-12"],["R16-7","R32-13","R32-14"],["R16-8","R32-15","R32-16"],
+ ["QF-1","R16-1","R16-2"],["QF-2","R16-3","R16-4"],["QF-3","R16-5","R16-6"],["QF-4","R16-7","R16-8"],
+ ["SF-1","QF-1","QF-2"],["SF-2","QF-3","QF-4"],["FINAL","SF-1","SF-2"]
+ ].forEach(([to,a,b])=>{
+  if(!state.knockout[to].winner){
+   state.knockout[to].a=state.knockout[a].winner||`Pemenang ${a}`;
+   state.knockout[to].b=state.knockout[b].winner||`Pemenang ${b}`;
+  }
+ });
+}
+
+function render(){
+ renderHome();
+ renderGroups();
+ renderMatches();
+ renderBracket();
+ renderWatch();
+}
+
+function renderHome(){
+ let ts=Object.keys(state.teams);
+ stTeams.textContent=ts.length;
+ stQ.textContent=ts.filter(t=>state.teams[t].status==="qualified").length;
+ stE.textContent=ts.filter(t=>state.teams[t].status==="eliminated").length;
+ stN.textContent=state.watch.length;
+ let fav=ts.filter(t=>state.teams[t].favorite);
+ favList.innerHTML=fav.length?fav.map(t=>`<span class="chip">${fmt(t)}</span>`).join(""):"<span class='mini'>Belum ada favorit.</span>";
+}
+
+function renderGroups(){
+ let st=standings(), q=searchTeam.value.toLowerCase(), f=filterStatus.value;
+ groupGrid.innerHTML=Object.keys(groups).map(g=>{
+  let rows=st[g].filter(x=>x.team.toLowerCase().includes(q)).filter(x=>f==="all"||state.teams[x.team].status===f||(f==="favorite"&&state.teams[x.team].favorite));
+  if(!rows.length) return "";
+  return `<div class="group"><div class="ghead"><h3>Grup ${g}</h3><b>Klasemen</b></div>${rows.map((x,i)=>teamRow(x,i+1)).join("")}</div>`;
+ }).join("");
+}
+
+function teamRow(x,pos){
+ let s=state.teams[x.team];
+ return `<div class="team ${s.status} ${s.favorite?'favorite':''}">
+ <div><div class="name">${pos}. ${fmt(x.team)}</div><div class="mini">${x.p} main • ${x.pts} poin • GD ${x.gd} • ${s.status}</div></div>
+ <div class="btns">
+ <button class="b f" onclick="fav('${x.team}')">⭐</button>
+ <button class="b q" onclick="setStatus('${x.team}','qualified')">Lolos</button>
+ <button class="b e" onclick="setStatus('${x.team}','eliminated')">Gugur</button>
+ <button class="b a" onclick="setStatus('${x.team}','active')">Aktif</button>
+ </div></div>`;
+}
+
+window.setStatus=(t,s)=>{state.teams[t].status=s;save();};
+window.fav=t=>{state.teams[t].favorite=!state.teams[t].favorite;save();};
+
+function renderMatches(){
+ if(filterGroup.options.length<2) Object.keys(groups).forEach(g=>filterGroup.add(new Option("Grup "+g,g)));
+ let fg=filterGroup.value, fm=filterMatch.value;
+ matchList.innerHTML=state.matches
+ .filter(m=>fg==="all"||m.group===fg)
+ .filter(m=>fm==="all"||(fm==="done"&&m.hs!==""&&m.as!=="")||(fm==="pending"&&(m.hs===""||m.as==="")))
+ .map(m=>`<div class="match">
+ <div class="meta"><span>${m.stage} • Grup ${m.group}</span><span>${wit(m.date)}</span></div>
+ <div class="vs">
+ <div class="sideTeam"><h4>${fmt(m.home)}</h4><div class="btns"><button class="b q" onclick="setStatus('${m.home}','qualified')">Lolos</button><button class="b e" onclick="setStatus('${m.home}','eliminated')">Gugur</button></div></div>
+ <div class="score"><input type="number" min="0" value="${m.hs}" onchange="score('${m.id}','hs',this.value)"><span class="vst">VS</span><input type="number" min="0" value="${m.as}" onchange="score('${m.id}','as',this.value)"></div>
+ <div class="sideTeam"><h4>${fmt(m.away)}</h4><div class="btns"><button class="b q" onclick="setStatus('${m.away}','qualified')">Lolos</button><button class="b e" onclick="setStatus('${m.away}','eliminated')">Gugur</button></div></div>
+ </div></div>`).join("");
+}
+
+window.score=(id,k,v)=>{
+ let m=state.matches.find(x=>x.id===id);
+ m[k]=v;
+ autoQ();
+ fillR32();
+ save();
+};
+
+function renderBracket(){
+ fillR32();
+ let r=[["32 Besar","R32",16],["16 Besar","R16",8],["Perempat Final","QF",4],["Semifinal","SF",2],["Final","FINAL",1]];
+ bracketBox.innerHTML=r.map(([n,p,c])=>`<div class="round"><h3>${n}</h3>${Array.from({length:c},(_,i)=>slot(p==="FINAL"?"FINAL":`${p}-${i+1}`)).join("")}</div>`).join("");
+}
+
+function slot(id){
+ let k=state.knockout[id];
+ return `<div class="slot"><label>${id}</label>
+ <div class="row"><div class="teamline">${k.a?fmt(k.a):"Menunggu"}</div><input class="scoreSmall" value="${k.as}" onchange="koScore('${id}','as',this.value)"></div>
+ <div class="row"><div class="teamline">${k.b?fmt(k.b):"Menunggu"}</div><input class="scoreSmall" value="${k.bs}" onchange="koScore('${id}','bs',this.value)"></div>
+ <button onclick="pickWinner('${id}')">Pemenang: ${k.winner?fmt(k.winner):"pilih"}</button>
+ </div>`;
+}
+
+function winner(k){
+ if(k.as===""||k.bs==="") return "";
+ if(+k.as>+k.bs) return k.a;
+ if(+k.bs>+k.as) return k.b;
+ return "";
+}
+
+window.koScore=(id,k,v)=>{
+ state.knockout[id][k]=v;
+ let w=winner(state.knockout[id]);
+ if(w) state.knockout[id].winner=w;
+ propKO();
+ save();
+};
+
+window.pickWinner=id=>{
+ let k=state.knockout[id];
+ let w=winner(k)||prompt("Ketik nama pemenang:",k.a||"");
+ if(w){
+  k.winner=w;
+  if(state.teams[w]) state.teams[w].status="qualified";
+  propKO();
+  save();
+ }
+};
+
+watchForm.onsubmit=e=>{
+ e.preventDefault();
+ state.watch.push({title:watchTitle.value,date:watchDate.value,place:watchPlace.value,note:watchNote.value});
+ e.target.reset();
+ save();
+};
+
+function renderWatch(){
+ watchList.innerHTML=state.watch.length?state.watch.map((w,i)=>`<div class="watchItem"><h4>${w.title}</h4><p>🕒 ${new Date(w.date).toLocaleString("id-ID")} WIT</p><p>📍 ${w.place||"-"}</p><p>📝 ${w.note||"-"}</p><button onclick="delWatch(${i})">Hapus</button></div>`).join(""):"<p class='mini'>Belum ada agenda nobar.</p>";
+}
+
+window.delWatch=i=>{state.watch.splice(i,1);save();};
+
+backup.onclick=()=>{
+ let a=document.createElement("a");
+ a.href=URL.createObjectURL(new Blob([JSON.stringify(state,null,2)],{type:"application/json"}));
+ a.download="backup-nobar-worldcup-2026.json";
+ a.click();
+};
+
+restore.onchange=e=>{
+ let f=e.target.files[0];
+ if(!f) return;
+ let r=new FileReader();
+ r.onload=()=>{
+  try{state=JSON.parse(r.result);save();alert("Import berhasil");}
+  catch{alert("File tidak valid");}
+ };
+ r.readAsText(f);
+};
+
+resetAll.onclick=()=>{
+ if(confirm("Reset semua data?")){
+  state=newState();
+  save();
+ }
+};
+
+searchTeam.oninput=renderGroups;
+filterStatus.onchange=renderGroups;
+filterGroup.onchange=renderMatches;
+filterMatch.onchange=renderMatches;
+
+render();
+</script>
 </body>
 </html>
