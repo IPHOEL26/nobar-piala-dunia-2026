@@ -104,7 +104,7 @@ function flag(team){
   const code = teamsData[team]?.[0];
   if (!code) return "";
 
-  return `<img class="flag-img" src="https://flagcdn.com/w40/${code}.png" alt="${safeText(team)}" loading="lazy" onerror="this.style.display='none'">`;
+  return `<img class="flag-img" src="https://flagcdn.com/w80/${code}.png" alt="${safeText(team)}" loading="lazy" onerror="this.style.display='none'">`;
 }
 
 function fmt(team){
@@ -986,7 +986,7 @@ function flag(team){
   const code = teamFlagCodes[team] || teamsData[team]?.[0];
   if (!code || String(code).includes("🇦")) return "";
 
-  return `<img class="flag-img" src="https://flagcdn.com/w40/${code}.png" alt="${safeText(team)}" loading="lazy" onerror="this.style.display='none'">`;
+  return `<img class="flag-img" src="https://flagcdn.com/w80/${code}.png" alt="${safeText(team)}" loading="lazy" onerror="this.style.display='none'">`;
 }
 
 function fmt(team){
