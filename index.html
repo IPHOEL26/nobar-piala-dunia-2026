@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Nobar Piala Dunia 2026 - IPHOEL EDUMATH</title>
+<link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+<div class="shell">
+  <aside class="side">
+    <div class="logo"><div>⚽</div><span>Nobar WC 2026<br><b>IPHOEL EDUMATH</b></span></div>
+    <button class="nav on" data-page="home">🏠 Dashboard</button>
+    <button class="nav" data-page="groups">🌍 Negara & Grup</button>
+    <button class="nav" data-page="matches">📅 Jadwal & Skor</button>
+    <button class="nav" data-page="bracket">🏆 Bagan Gugur</button>
+    <button class="nav" data-page="party">🍿 Jadwal Nobar</button>
+    <button class="nav" data-page="data">💾 Data</button>
+    <p class="hint">Aplikasi offline untuk pantau Piala Dunia bareng keluarga.</p>
+  </aside>
+  <main>
+    <header>
+      <div><small>WORLD CUP FAMILY TRACKER</small><h1 id="title">Dashboard</h1></div>
+      <div class="topbtn"><button onclick="backup()">Export</button><button onclick="print()">Cetak</button></div>
+    </header>
+
+    <section id="home" class="page show">
+      <div class="hero">
+        <div><b class="badge">Piala Dunia 2026</b><h2>Pusat Pantauan Nobar Keluarga</h2>
+        <p>Isi skor, tandai negara lolos/gugur, simpan tim favorit, atur agenda nobar, dan pantau bagan gugur.</p>
+        <button onclick="go('matches')">Mulai Isi Skor</button><button class="light" onclick="go('party')">Buat Nobar</button></div>
+        <div class="cup">🏆<span>Final<br>19 Juli 2026</span></div>
+      </div>
+      <div class="stats">
+        <div><span>Total Negara</span><b id="sTeams">48</b></div>
+        <div><span>Lolos</span><b id="sQ">0</b></div>
+        <div><span>Gugur</span><b id="sE">0</b></div>
+        <div><span>Agenda Nobar</span><b id="sN">0</b></div>
+      </div>
+      <div class="grid2">
+        <div class="card"><h3>⭐ Tim Favorit</h3><div id="favBox" class="chips"></div></div>
+        <div class="card"><h3>🗓️ Fase Turnamen</h3><div class="timeline">
+          <p><b>Fase Grup</b><span>11 - 27 Juni 2026</span></p><p><b>32 Besar</b><span>28 Juni - 3 Juli 2026</span></p>
+          <p><b>16 Besar</b><span>4 - 7 Juli 2026</span></p><p><b>Perempat Final</b><span>9 - 12 Juli 2026</span></p>
+          <p><b>Semifinal</b><span>15 - 16 Juli 2026</span></p><p><b>Tempat Ketiga</b><span>18 Juli 2026</span></p><p><b>Final</b><span>19 Juli 2026</span></p>
+        </div></div>
+      </div>
+    </section>
+
+    <section id="groups" class="page">
+      <div class="tools"><input id="search" placeholder="Cari negara..."/><select id="filter"><option value="all">Semua status</option><option value="qualified">Lolos</option><option value="eliminated">Gugur</option><option value="active">Aktif</option><option value="favorite">Favorit</option></select></div>
+      <div id="groupGrid" class="groupgrid"></div>
+    </section>
+
+    <section id="matches" class="page">
+      <div class="tools"><select id="gFilter"><option value="all">Semua grup</option></select><select id="mFilter"><option value="all">Semua pertandingan</option><option value="done">Sudah ada skor</option><option value="pending">Belum ada skor</option></select></div>
+      <div id="matchList"></div>
+    </section>
+
+    <section id="bracket" class="page">
+      <div class="note">Bagan gugur manual. Isi nama tim sesuai hasil terbaru, lalu klik “Lolos”.</div>
+      <div id="bracketBox" class="bracket"></div>
+    </section>
+
+    <section id="party" class="page">
+      <div class="grid2">
+        <form id="partyForm" class="card form">
+          <h3>Tambah Agenda Nobar</h3>
+          <label>Judul<input id="pTitle" required placeholder="Nobar Final bareng keluarga"/></label>
+          <label>Tanggal & Jam<input id="pDate" required type="datetime-local"/></label>
+          <label>Lokasi<input id="pPlace" placeholder="Rumah, ruang keluarga"/></label>
+          <label>Catatan<textarea id="pNote" placeholder="Cemilan, proyektor, speaker, jersey"></textarea></label>
+          <button>Simpan</button>
+        </form>
+        <div class="card"><h3>Daftar Nobar</h3><div id="partyList"></div></div>
+      </div>
+    </section>
+
+    <section id="data" class="page">
+      <div class="card"><h3>Kelola Data</h3><p>Semua perubahan tersimpan di browser laptop ini.</p>
+        <button onclick="backup()">Download Backup JSON</button>
+        <label class="import">Import JSON<input id="importFile" type="file" accept=".json"/></label>
+        <button class="danger" onclick="resetAll()">Reset Semua</button>
+      </div>
+      <div class="card"><h3>Catatan</h3><p>Data grup dan fase turnamen mengikuti data yang kawan berikan. Jika data resmi berubah, aplikasi bisa diperbarui lagi.</p></div>
+    </section>
+  </main>
+</div>
+<script src="script.js"></script>
+</body>
+</html>
