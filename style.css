@@ -825,3 +825,142 @@ label{
     min-width:1350px;
   }
 }
+
+
+/* =====================================================
+   PATCH AMAN 2026
+   Bendera otomatis dan bracket lebih simetris
+   Bagian ini ditambahkan tanpa menghapus style lama.
+===================================================== */
+
+.team-display{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  min-width:0;
+  max-width:100%;
+  vertical-align:middle;
+}
+
+.flag-img{
+  width:26px;
+  height:18px;
+  object-fit:cover;
+  border-radius:4px;
+  box-shadow:0 0 0 1px rgba(255,255,255,.35);
+  flex-shrink:0;
+  background:#fff;
+}
+
+.ko-team .team-display span:last-child,
+.name .team-display span:last-child,
+.team-name .team-display span:last-child,
+.sideTeam h4 .team-display span:last-child,
+.match-side h4 .team-display span:last-child,
+.chip .team-display span:last-child{
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+.bracket-board{
+  min-width:1600px;
+}
+
+.bracket-grid.bracket-grid-clean{
+  display:grid;
+  grid-template-columns:210px 210px 210px 210px 260px 210px 210px 210px 210px;
+  gap:18px;
+  align-items:stretch;
+}
+
+.bracket-grid-clean .round-col.clean{
+  display:flex;
+  flex-direction:column;
+  min-height:1120px;
+  position:relative;
+  gap:12px;
+  justify-content:flex-start;
+}
+
+.bracket-grid-clean .round-col.clean h4{
+  height:24px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin:0;
+}
+
+.bracket-grid-clean .round-stack{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-around;
+  gap:12px;
+}
+
+.bracket-grid-clean .round-stack.cards-1{
+  justify-content:center;
+}
+
+.bracket-grid-clean .round-stack.cards-2{
+  padding-top:165px;
+  padding-bottom:165px;
+}
+
+.bracket-grid-clean .round-stack.cards-4{
+  padding-top:70px;
+  padding-bottom:70px;
+}
+
+.bracket-grid-clean .round-stack.cards-8{
+  padding-top:0;
+  padding-bottom:0;
+}
+
+.bracket-grid-clean .final-col.clean{
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  gap:22px;
+  min-height:1120px;
+}
+
+.bracket-grid-clean .trophy-box{
+  margin-bottom:4px;
+}
+
+.bracket-grid-clean .ko-card{
+  min-height:126px;
+}
+
+.bracket-grid-clean .path-left .ko-card::after{
+  content:"";
+  position:absolute;
+  top:50%;
+  right:-18px;
+  width:18px;
+  height:2px;
+  background:rgba(134,223,255,.72);
+}
+
+.bracket-grid-clean .path-right .ko-card::before{
+  content:"";
+  position:absolute;
+  top:50%;
+  left:-18px;
+  width:18px;
+  height:2px;
+  background:rgba(134,223,255,.72);
+}
+
+.bracket-grid-clean .final-col .ko-card::before,
+.bracket-grid-clean .final-col .ko-card::after{
+  display:none;
+}
+
+@media(max-width:900px){
+  .bracket-board{
+    min-width:1500px;
+  }
+}
