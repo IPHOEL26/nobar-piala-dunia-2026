@@ -1,63 +1,63 @@
 const teamsData = {
-  "Meksiko":["🇲🇽","A"],
-  "Afrika Selatan":["🇿🇦","A"],
-  "Korea Selatan":["🇰🇷","A"],
-  "Ceko":["🇨🇿","A"],
+  "Meksiko":["mx","A"],
+  "Afrika Selatan":["za","A"],
+  "Korea Selatan":["kr","A"],
+  "Ceko":["cz","A"],
 
-  "Kanada":["🇨🇦","B"],
-  "Bosnia dan Herzegovina":["🇧🇦","B"],
-  "Qatar":["🇶🇦","B"],
-  "Swiss":["🇨🇭","B"],
+  "Kanada":["ca","B"],
+  "Bosnia dan Herzegovina":["ba","B"],
+  "Qatar":["qa","B"],
+  "Swiss":["ch","B"],
 
-  "Brasil":["🇧🇷","C"],
-  "Maroko":["🇲🇦","C"],
-  "Haiti":["🇭🇹","C"],
-  "Skotlandia":["🏴","C"],
+  "Brasil":["br","C"],
+  "Maroko":["ma","C"],
+  "Haiti":["ht","C"],
+  "Skotlandia":["gb-sct","C"],
 
-  "Amerika Serikat":["🇺🇸","D"],
-  "Paraguay":["🇵🇾","D"],
-  "Australia":["🇦🇺","D"],
-  "Turki":["🇹🇷","D"],
+  "Amerika Serikat":["us","D"],
+  "Paraguay":["py","D"],
+  "Australia":["au","D"],
+  "Turki":["tr","D"],
 
-  "Jerman":["🇩🇪","E"],
-  "Curaçao":["🇨🇼","E"],
-  "Pantai Gading":["🇨🇮","E"],
-  "Ekuador":["🇪🇨","E"],
+  "Jerman":["de","E"],
+  "Curaçao":["cw","E"],
+  "Pantai Gading":["ci","E"],
+  "Ekuador":["ec","E"],
 
-  "Belanda":["🇳🇱","F"],
-  "Jepang":["🇯🇵","F"],
-  "Swedia":["🇸🇪","F"],
-  "Tunisia":["🇹🇳","F"],
+  "Belanda":["nl","F"],
+  "Jepang":["jp","F"],
+  "Swedia":["se","F"],
+  "Tunisia":["tn","F"],
 
-  "Belgia":["🇧🇪","G"],
-  "Mesir":["🇪🇬","G"],
-  "Iran":["🇮🇷","G"],
-  "Selandia Baru":["🇳🇿","G"],
+  "Belgia":["be","G"],
+  "Mesir":["eg","G"],
+  "Iran":["ir","G"],
+  "Selandia Baru":["nz","G"],
 
-  "Spanyol":["🇪🇸","H"],
-  "Cape Verde":["🇨🇻","H"],
-  "Arab Saudi":["🇸🇦","H"],
-  "Uruguay":["🇺🇾","H"],
+  "Spanyol":["es","H"],
+  "Cape Verde":["cv","H"],
+  "Arab Saudi":["sa","H"],
+  "Uruguay":["uy","H"],
 
-  "Prancis":["🇫🇷","I"],
-  "Senegal":["🇸🇳","I"],
-  "Irak":["🇮🇶","I"],
-  "Norwegia":["🇳🇴","I"],
+  "Prancis":["fr","I"],
+  "Senegal":["sn","I"],
+  "Irak":["iq","I"],
+  "Norwegia":["no","I"],
 
-  "Argentina":["🇦🇷","J"],
-  "Aljazair":["🇩🇿","J"],
-  "Austria":["🇦🇹","J"],
-  "Yordania":["🇯🇴","J"],
+  "Argentina":["ar","J"],
+  "Aljazair":["dz","J"],
+  "Austria":["at","J"],
+  "Yordania":["jo","J"],
 
-  "Portugal":["🇵🇹","K"],
-  "RD Kongo":["🇨🇩","K"],
-  "Uzbekistan":["🇺🇿","K"],
-  "Kolombia":["🇨🇴","K"],
+  "Portugal":["pt","K"],
+  "RD Kongo":["cd","K"],
+  "Uzbekistan":["uz","K"],
+  "Kolombia":["co","K"],
 
-  "Inggris":["🏴","L"],
-  "Kroasia":["🇭🇷","L"],
-  "Ghana":["🇬🇭","L"],
-  "Panama":["🇵🇦","L"]
+  "Inggris":["gb-eng","L"],
+  "Kroasia":["hr","L"],
+  "Ghana":["gh","L"],
+  "Panama":["pa","L"]
 };
 
 const groups = {};
@@ -85,14 +85,36 @@ function el(id){
   return document.getElementById(id);
 }
 
+function safeText(value){
+  return String(value || "")
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+
+function jsSafe(value){
+  return String(value || "")
+    .replaceAll("\\","\\\\")
+    .replaceAll("'","\\'");
+}
+
 function flag(team){
-  return teamsData[team]?.[0] || "";
+  const code = teamsData[team]?.[0];
+  if (!code) return "";
+
+  return `<img class="flag-img" src="https://flagcdn.com/w40/${code}.png" alt="${safeText(team)}" loading="lazy" onerror="this.style.display='none'">`;
 }
 
 function fmt(team){
   if (!team) return "Menunggu";
-  if (teamsData[team]) return `${flag(team)} ${team}`;
-  return team;
+
+  if (teamsData[team]) {
+    return `<span class="team-display">${flag(team)}<span>${safeText(team)}</span></span>`;
+  }
+
+  return safeText(team);
 }
 
 function newState(){
@@ -162,16 +184,47 @@ function makeKOIds(){
     .concat(["SF-1","SF-2","FINAL","BRONZE"]);
 }
 
+function normalizeState(raw){
+  const fresh = newState();
+
+  if (!raw || typeof raw !== "object") return fresh;
+
+  const state = {
+    teams: raw.teams || fresh.teams,
+    matches: Array.isArray(raw.matches) && raw.matches.length ? raw.matches : fresh.matches,
+    knockout: raw.knockout || fresh.knockout,
+    watch: raw.watch || raw.nobar || []
+  };
+
+  Object.keys(fresh.teams).forEach(team => {
+    if (!state.teams[team]) state.teams[team] = fresh.teams[team];
+  });
+
+  makeKOIds().forEach(id => {
+    if (!state.knockout[id]) {
+      state.knockout[id] = {
+        a:"",
+        b:"",
+        as:"",
+        bs:"",
+        winner:""
+      };
+    }
+  });
+
+  return state;
+}
+
 let state;
 
 try{
-  state = JSON.parse(localStorage.getItem("wc26-iphoel-bracket-v4")) || newState();
+  state = normalizeState(JSON.parse(localStorage.getItem("wc26-iphoel-bracket-v5")));
 }catch{
   state = newState();
 }
 
 function save(){
-  localStorage.setItem("wc26-iphoel-bracket-v4", JSON.stringify(state));
+  localStorage.setItem("wc26-iphoel-bracket-v5", JSON.stringify(state));
   render();
 }
 
@@ -228,26 +281,28 @@ function standings(){
     const home = find(match.group, match.home);
     const away = find(match.group, match.away);
 
-    const hs = Number(match.hs);
-    const as = Number(match.as);
+    if (!home || !away) return;
+
+    const homeScore = Number(match.hs);
+    const awayScore = Number(match.as);
 
     home.p++;
     away.p++;
 
-    home.gf += hs;
-    home.ga += as;
+    home.gf += homeScore;
+    home.ga += awayScore;
 
-    away.gf += as;
-    away.ga += hs;
+    away.gf += awayScore;
+    away.ga += homeScore;
 
     home.gd = home.gf - home.ga;
     away.gd = away.gf - away.ga;
 
-    if (hs > as){
+    if (homeScore > awayScore){
       home.w++;
       away.l++;
       home.pts += 3;
-    }else if (hs < as){
+    }else if (homeScore < awayScore){
       away.w++;
       home.l++;
       away.pts += 3;
@@ -294,7 +349,7 @@ function autoQualify(){
       state.teams[row.team].status = "qualified";
     });
 
-  localStorage.setItem("wc26-iphoel-bracket-v4", JSON.stringify(state));
+  localStorage.setItem("wc26-iphoel-bracket-v5", JSON.stringify(state));
 }
 
 function qualifiers(){
@@ -345,7 +400,7 @@ function fillR32(){
     const id = `R32-${index+1}`;
 
     if (!state.knockout[id]) {
-      state.knockout[id] = {a:"",b:"",as:"",bs:"",winner:""};
+      state.knockout[id] = {a:"", b:"", as:"", bs:"", winner:""};
     }
 
     const match = state.knockout[id];
@@ -385,7 +440,7 @@ function propagateKO(){
 
   map.forEach(([to, fromA, fromB]) => {
     if (!state.knockout[to]) {
-      state.knockout[to] = {a:"",b:"",as:"",bs:"",winner:""};
+      state.knockout[to] = {a:"", b:"", as:"", bs:"", winner:""};
     }
 
     const target = state.knockout[to];
@@ -401,11 +456,11 @@ function matchWinner(match){
   if (!match) return "";
   if (match.as === "" || match.bs === "") return "";
 
-  const a = Number(match.as);
-  const b = Number(match.bs);
+  const scoreA = Number(match.as);
+  const scoreB = Number(match.bs);
 
-  if (a > b) return match.a;
-  if (b > a) return match.b;
+  if (scoreA > scoreB) return match.a;
+  if (scoreB > scoreA) return match.b;
 
   return "";
 }
@@ -486,21 +541,23 @@ function teamRow(row, pos){
         <div class="mini">${row.p} main • ${row.pts} poin • GD ${row.gd} • ${status.status}</div>
       </div>
       <div class="btns team-actions">
-        <button class="b f status-btn star" onclick="fav('${row.team}')">⭐</button>
-        <button class="b q status-btn qual" onclick="setStatus('${row.team}','qualified')">Lolos</button>
-        <button class="b e status-btn elim" onclick="setStatus('${row.team}','eliminated')">Gugur</button>
-        <button class="b a status-btn neutral" onclick="setStatus('${row.team}','active')">Aktif</button>
+        <button class="b f status-btn star" onclick="fav('${jsSafe(row.team)}')">⭐</button>
+        <button class="b q status-btn qual" onclick="setStatus('${jsSafe(row.team)}','qualified')">Lolos</button>
+        <button class="b e status-btn elim" onclick="setStatus('${jsSafe(row.team)}','eliminated')">Gugur</button>
+        <button class="b a status-btn neutral" onclick="setStatus('${jsSafe(row.team)}','active')">Aktif</button>
       </div>
     </div>
   `;
 }
 
 window.setStatus = function(team, status){
+  if (!state.teams[team]) return;
   state.teams[team].status = status;
   save();
 };
 
 window.fav = function(team){
+  if (!state.teams[team]) return;
   state.teams[team].favorite = !state.teams[team].favorite;
   save();
 };
@@ -539,22 +596,22 @@ function renderMatches(){
           <div class="sideTeam match-side">
             <h4>${fmt(match.home)}</h4>
             <div class="btns match-actions">
-              <button class="b q status-btn qual" onclick="setStatus('${match.home}','qualified')">Lolos</button>
-              <button class="b e status-btn elim" onclick="setStatus('${match.home}','eliminated')">Gugur</button>
+              <button class="b q status-btn qual" onclick="setStatus('${jsSafe(match.home)}','qualified')">Lolos</button>
+              <button class="b e status-btn elim" onclick="setStatus('${jsSafe(match.home)}','eliminated')">Gugur</button>
             </div>
           </div>
 
           <div class="score score-box">
-            <input type="number" min="0" value="${match.hs}" onchange="score('${match.id}','hs',this.value)">
+            <input type="number" min="0" value="${safeText(match.hs)}" onchange="score('${match.id}','hs',this.value)">
             <span class="vst vsText">VS</span>
-            <input type="number" min="0" value="${match.as}" onchange="score('${match.id}','as',this.value)">
+            <input type="number" min="0" value="${safeText(match.as)}" onchange="score('${match.id}','as',this.value)">
           </div>
 
           <div class="sideTeam match-side">
             <h4>${fmt(match.away)}</h4>
             <div class="btns match-actions">
-              <button class="b q status-btn qual" onclick="setStatus('${match.away}','qualified')">Lolos</button>
-              <button class="b e status-btn elim" onclick="setStatus('${match.away}','eliminated')">Gugur</button>
+              <button class="b q status-btn qual" onclick="setStatus('${jsSafe(match.away)}','qualified')">Lolos</button>
+              <button class="b e status-btn elim" onclick="setStatus('${jsSafe(match.away)}','eliminated')">Gugur</button>
             </div>
           </div>
         </div>
@@ -582,12 +639,12 @@ function koCard(id, cls){
 
       <div class="ko-row">
         <div class="ko-team">${fmt(k.a)}</div>
-        <input class="ko-score" value="${k.as}" onchange="koScore('${id}','as',this.value)">
+        <input class="ko-score" value="${safeText(k.as)}" onchange="koScore('${id}','as',this.value)">
       </div>
 
       <div class="ko-row">
         <div class="ko-team">${fmt(k.b)}</div>
-        <input class="ko-score" value="${k.bs}" onchange="koScore('${id}','bs',this.value)">
+        <input class="ko-score" value="${safeText(k.bs)}" onchange="koScore('${id}','bs',this.value)">
       </div>
 
       <button class="ko-win" onclick="pickWinner('${id}')">
@@ -614,22 +671,25 @@ function renderBracket(){
       </div>
 
       <div class="bracket-grid">
-        <div class="round-col">
+        <div class="round-col path-left">
           <h4>R32</h4>
           ${[1,2,3,4].map(n => koCard("R32-"+n,"r32")).join("")}
+          <span class="connector-line"></span>
         </div>
 
-        <div class="round-col">
+        <div class="round-col path-left">
           <h4>R16</h4>
           ${[1,2].map(n => koCard("R16-"+n,"r16")).join("")}
+          <span class="connector-line"></span>
         </div>
 
-        <div class="round-col">
+        <div class="round-col path-left">
           <h4>QF</h4>
           ${koCard("QF-1","qf")}
+          <span class="connector-line"></span>
         </div>
 
-        <div class="round-col">
+        <div class="round-col path-left">
           <h4>SF</h4>
           ${koCard("SF-1","sf")}
         </div>
@@ -644,60 +704,69 @@ function renderBracket(){
           ${koCard("BRONZE","bronze")}
         </div>
 
-        <div class="round-col">
+        <div class="round-col path-right">
           <h4>SF</h4>
           ${koCard("SF-2","sf")}
         </div>
 
-        <div class="round-col">
+        <div class="round-col path-right">
           <h4>QF</h4>
           ${koCard("QF-4","qf")}
+          <span class="connector-line"></span>
         </div>
 
-        <div class="round-col">
+        <div class="round-col path-right">
           <h4>R16</h4>
           ${[7,8].map(n => koCard("R16-"+n,"r16")).join("")}
+          <span class="connector-line"></span>
         </div>
 
-        <div class="round-col">
+        <div class="round-col path-right">
           <h4>R32</h4>
           ${[13,14,15,16].map(n => koCard("R32-"+n,"r32")).join("")}
+          <span class="connector-line"></span>
         </div>
       </div>
 
       <div class="bracket-grid" style="margin-top:18px;">
-        <div class="round-col">
+        <div class="round-col path-left">
           <h4>R32</h4>
           ${[5,6,7,8].map(n => koCard("R32-"+n,"r32")).join("")}
+          <span class="connector-line"></span>
         </div>
 
-        <div class="round-col">
+        <div class="round-col path-left">
           <h4>R16</h4>
           ${[3,4].map(n => koCard("R16-"+n,"r16")).join("")}
+          <span class="connector-line"></span>
         </div>
 
-        <div class="round-col">
+        <div class="round-col path-left">
           <h4>QF</h4>
           ${koCard("QF-2","qf")}
+          <span class="connector-line"></span>
         </div>
 
         <div class="round-col"></div>
         <div class="final-col"></div>
         <div class="round-col"></div>
 
-        <div class="round-col">
+        <div class="round-col path-right">
           <h4>QF</h4>
           ${koCard("QF-3","qf")}
+          <span class="connector-line"></span>
         </div>
 
-        <div class="round-col">
+        <div class="round-col path-right">
           <h4>R16</h4>
           ${[5,6].map(n => koCard("R16-"+n,"r16")).join("")}
+          <span class="connector-line"></span>
         </div>
 
-        <div class="round-col">
+        <div class="round-col path-right">
           <h4>R32</h4>
           ${[9,10,11,12].map(n => koCard("R32-"+n,"r32")).join("")}
+          <span class="connector-line"></span>
         </div>
       </div>
     </div>
@@ -745,10 +814,10 @@ function renderWatch(){
   watchList.innerHTML = state.watch.length
     ? state.watch.map((item, index) => `
       <div class="watchItem nobar-item">
-        <h4>${item.title}</h4>
-        <p>🕒 ${new Date(item.date).toLocaleString("id-ID")} WIT</p>
-        <p>📍 ${item.place || "-"}</p>
-        <p>📝 ${item.note || "-"}</p>
+        <h4>${safeText(item.title)}</h4>
+        <p>🕒 ${item.date ? new Date(item.date).toLocaleString("id-ID") : "-"} WIT</p>
+        <p>📍 ${safeText(item.place || "-")}</p>
+        <p>📝 ${safeText(item.note || "-")}</p>
         <button onclick="delWatch(${index})">Hapus</button>
       </div>
     `).join("")
@@ -784,6 +853,7 @@ window.delWatch = function(index){
 };
 
 const backupBtn = el("backup") || el("downloadJson");
+
 if (backupBtn){
   backupBtn.onclick = function(){
     const a = document.createElement("a");
@@ -796,6 +866,7 @@ if (backupBtn){
 }
 
 const restoreInput = el("restore") || el("importJson");
+
 if (restoreInput){
   restoreInput.onchange = function(e){
     const file = e.target.files[0];
@@ -805,7 +876,7 @@ if (restoreInput){
 
     reader.onload = function(){
       try{
-        state = JSON.parse(reader.result);
+        state = normalizeState(JSON.parse(reader.result));
         save();
         alert("Import berhasil");
       }catch{
@@ -818,6 +889,7 @@ if (restoreInput){
 }
 
 const resetBtn = el("resetAll");
+
 if (resetBtn){
   resetBtn.onclick = function(){
     if (confirm("Reset semua data?")){
