@@ -472,8 +472,7 @@ textarea{
 }
 
 .vst,
-.vsText,
-.vs{
+.vsText{
   color:var(--gold);
   font-weight:900;
 }
@@ -486,6 +485,35 @@ textarea{
   padding:13px 15px;
   border-radius:16px;
   margin-bottom:14px;
+}
+
+/* BENDERA NEGARA */
+
+.team-display{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  min-width:0;
+  max-width:100%;
+}
+
+.flag-img{
+  width:26px;
+  height:18px;
+  object-fit:cover;
+  border-radius:4px;
+  box-shadow:0 0 0 1px rgba(255,255,255,.35);
+  flex-shrink:0;
+  background:#fff;
+}
+
+.ko-team .team-display span:last-child,
+.name .team-display span:last-child,
+.sideTeam h4 .team-display span:last-child,
+.match-side h4 .team-display span:last-child{
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
 }
 
 /* BAGAN GUGUR MODEL FIFA */
@@ -545,6 +573,7 @@ textarea{
   gap:12px;
   justify-content:space-around;
   min-height:760px;
+  position:relative;
 }
 
 .round-col h4{
@@ -644,6 +673,50 @@ textarea{
   margin-top:6px;
   font-size:20px;
   color:var(--gold);
+}
+
+/* GARIS PENGHUBUNG BAGAN */
+
+.path-left .ko-card::after{
+  content:"";
+  position:absolute;
+  top:50%;
+  right:-18px;
+  width:18px;
+  height:2px;
+  background:rgba(134,223,255,.72);
+}
+
+.path-right .ko-card::before{
+  content:"";
+  position:absolute;
+  top:50%;
+  left:-18px;
+  width:18px;
+  height:2px;
+  background:rgba(134,223,255,.72);
+}
+
+.path-left .ko-card::before,
+.path-right .ko-card::after,
+.final-col .ko-card::before,
+.final-col .ko-card::after{
+  display:none;
+}
+
+.connector-line{
+  position:absolute;
+  background:rgba(134,223,255,.35);
+  width:2px;
+  right:-18px;
+  top:20%;
+  bottom:20%;
+  border-radius:10px;
+}
+
+.path-right .connector-line{
+  left:-18px;
+  right:auto;
 }
 
 label{
