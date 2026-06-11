@@ -1,3 +1,4 @@
+
 const teamsData = {
   "Meksiko":["mx","A"], "Afrika Selatan":["za","A"], "Korea Selatan":["kr","A"], "Ceko":["cz","A"],
   "Kanada":["ca","B"], "Bosnia dan Herzegovina":["ba","B"], "Qatar":["qa","B"], "Swiss":["ch","B"],
@@ -28,7 +29,7 @@ const pageName = {
   data:"Data", settings:"Data"
 };
 
-const STORAGE_KEY = "wc26-iphoel-auto-v8-cerah-mobile-save";
+const STORAGE_KEY = "wc26-iphoel-auto-v7-official-schedule";
 const OLD_KEYS = ["wc26-iphoel-auto-v6", "wc26-iphoel-bracket-v5", "wc26-iphoel-bracket-v3"];
 
 function el(id){ return document.getElementById(id); }
@@ -466,59 +467,6 @@ function matchLabel(id){
   return id;
 }
 
-
-const KO_MATCH_INFO = {
-  M73:{date:"2026-06-28T12:00:00-07:00", venue:"Los Angeles Stadium"},
-  M74:{date:"2026-06-29T16:30:00-04:00", venue:"Boston Stadium"},
-  M75:{date:"2026-06-29T19:00:00-06:00", venue:"Monterrey Stadium"},
-  M76:{date:"2026-06-29T12:00:00-05:00", venue:"Houston Stadium"},
-  M77:{date:"2026-06-30T17:00:00-04:00", venue:"New York New Jersey Stadium"},
-  M78:{date:"2026-06-30T12:00:00-05:00", venue:"Dallas Stadium"},
-  M79:{date:"2026-06-30T19:00:00-06:00", venue:"Mexico City Stadium"},
-  M80:{date:"2026-07-01T12:00:00-04:00", venue:"Atlanta Stadium"},
-  M81:{date:"2026-07-01T17:00:00-07:00", venue:"San Francisco Bay Area Stadium"},
-  M82:{date:"2026-07-01T13:00:00-07:00", venue:"Seattle Stadium"},
-  M83:{date:"2026-07-02T19:00:00-04:00", venue:"Toronto Stadium"},
-  M84:{date:"2026-07-02T12:00:00-07:00", venue:"Los Angeles Stadium"},
-  M85:{date:"2026-07-02T20:00:00-07:00", venue:"Vancouver Stadium"},
-  M86:{date:"2026-07-03T18:00:00-04:00", venue:"Miami Stadium"},
-  M87:{date:"2026-07-03T20:30:00-05:00", venue:"Kansas City Stadium"},
-  M88:{date:"2026-07-03T13:00:00-05:00", venue:"Dallas Stadium"},
-  M89:{date:"2026-07-04T17:00:00-04:00", venue:"Round of 16"},
-  M90:{date:"2026-07-04T13:00:00-04:00", venue:"Round of 16"},
-  M91:{date:"2026-07-05T16:00:00-04:00", venue:"Round of 16"},
-  M92:{date:"2026-07-05T20:00:00-04:00", venue:"Round of 16"},
-  M93:{date:"2026-07-06T15:00:00-04:00", venue:"Round of 16"},
-  M94:{date:"2026-07-06T20:00:00-04:00", venue:"Round of 16"},
-  M95:{date:"2026-07-07T12:00:00-04:00", venue:"Round of 16"},
-  M96:{date:"2026-07-07T16:00:00-04:00", venue:"Round of 16"},
-  M97:{date:"2026-07-09T16:00:00-04:00", venue:"Quarter-final"},
-  M98:{date:"2026-07-10T15:00:00-04:00", venue:"Quarter-final"},
-  M99:{date:"2026-07-11T17:00:00-04:00", venue:"Quarter-final"},
-  M100:{date:"2026-07-11T21:00:00-04:00", venue:"Quarter-final"},
-  M101:{date:"2026-07-14T15:00:00-04:00", venue:"Semi-final"},
-  M102:{date:"2026-07-15T15:00:00-04:00", venue:"Semi-final"},
-  M103:{date:"2026-07-18T17:00:00-04:00", venue:"Bronze final"},
-  M104:{date:"2026-07-19T15:00:00-04:00", venue:"Final"}
-};
-
-function shortWit(iso){
-  return new Intl.DateTimeFormat("id-ID", {
-    timeZone:"Asia/Jayapura",
-    weekday:"short",
-    day:"2-digit",
-    month:"short",
-    hour:"2-digit",
-    minute:"2-digit"
-  }).format(new Date(iso)).replaceAll(".", ":") + " WIT";
-}
-
-function koScheduleText(id){
-  const info = KO_MATCH_INFO[id];
-  if (!info) return "Jadwal menunggu";
-  return `${shortWit(info.date)}${info.venue ? " • " + info.venue : ""}`;
-}
-
 function ensureKO(id){
   if (!state.knockout[id]) state.knockout[id] = {a:"", b:"", as:"", bs:"", winner:"", loser:""};
   return state.knockout[id];
@@ -707,7 +655,7 @@ function renderMatches(){
     .filter(match => fg === "all" || match.group === fg)
     .filter(match => fm === "all" || (fm === "done" && match.hs !== "" && match.as !== "") || (fm === "pending" && (match.hs === "" || match.as === "")))
     .map(match => `
-      <div class="match match-card" id="card-${match.id}">
+      <div class="match match-card">
         <div class="meta match-meta">
           <span>Match ${match.matchNo || match.id} • ${match.stage} • Grup ${match.group}${match.venue ? " • " + safeText(match.venue) : ""}</span>
           <span>${wit(match.date)}</span>
@@ -715,10 +663,9 @@ function renderMatches(){
         <div class="vs match-teams">
           <div class="sideTeam match-side"><h4>${fmt(match.home)}</h4></div>
           <div class="score score-box">
-            <input id="hs-${match.id}" type="number" inputmode="numeric" min="0" value="${safeText(match.hs)}" oninput="draftScore('${match.id}','hs',this.value)" onkeydown="scoreKey(event,'${match.id}')" aria-label="Skor ${safeText(match.home)}">
+            <input type="number" inputmode="numeric" min="0" value="${safeText(match.hs)}" onchange="score('${match.id}','hs',this.value)" aria-label="Skor ${safeText(match.home)}">
             <span class="vst vsText">VS</span>
-            <button class="score-save" data-save-match="${match.id}" onclick="saveMatchScore('${match.id}')" title="Simpan skor" aria-label="Simpan skor pertandingan ${match.matchNo || match.id}">💾</button>
-            <input id="as-${match.id}" type="number" inputmode="numeric" min="0" value="${safeText(match.as)}" oninput="draftScore('${match.id}','as',this.value)" onkeydown="scoreKey(event,'${match.id}')" aria-label="Skor ${safeText(match.away)}">
+            <input type="number" inputmode="numeric" min="0" value="${safeText(match.as)}" onchange="score('${match.id}','as',this.value)" aria-label="Skor ${safeText(match.away)}">
           </div>
           <div class="sideTeam match-side"><h4>${fmt(match.away)}</h4></div>
         </div>
@@ -726,48 +673,10 @@ function renderMatches(){
     `).join("");
 }
 
-window.draftScore = function(id, key, value){
+window.score = function(id, key, value){
   const match = state.matches.find(x => x.id === id);
   if (!match) return;
   match[key] = cleanScoreValue(value);
-};
-
-window.saveMatchScore = function(id){
-  const match = state.matches.find(x => x.id === id);
-  if (!match) return;
-  const homeInput = el(`hs-${id}`);
-  const awayInput = el(`as-${id}`);
-  if (homeInput) match.hs = cleanScoreValue(homeInput.value);
-  if (awayInput) match.as = cleanScoreValue(awayInput.value);
-  updateKO();
-  save(false);
-  flashSaveButton(id);
-};
-
-window.scoreKey = function(event, id){
-  if (event.key === "Enter"){
-    event.preventDefault();
-    saveMatchScore(id);
-  }
-};
-
-function flashSaveButton(id){
-  const btn = document.querySelector(`[data-save-match="${id}"]`);
-  if (!btn) return;
-  const old = btn.textContent;
-  btn.textContent = "✅";
-  btn.classList.add("saved");
-  setTimeout(() => {
-    const freshBtn = document.querySelector(`[data-save-match="${id}"]`);
-    if (freshBtn){
-      freshBtn.textContent = old || "💾";
-      freshBtn.classList.remove("saved");
-    }
-  }, 900);
-}
-
-window.score = function(id, key, value){
-  draftScore(id, key, value);
   updateKO();
   save();
 };
@@ -787,8 +696,8 @@ function koCard(id){
   const k = ensureKO(id);
   const ready = isActualTeam(k.a) && isActualTeam(k.b);
   const tied = ready && k.as !== "" && k.bs !== "" && Number(k.as) === Number(k.bs);
-  const statusClass = tied ? "warn" : "";
-  const statusText = `🗓️ ${koScheduleText(id)}`;
+  const statusClass = k.winner ? "ok" : (tied ? "warn" : "");
+  const statusText = k.winner ? `Pemenang otomatis: ${fmt(k.winner)}` : (tied ? "Skor imbang. Isi skor akhir yang menghasilkan pemenang." : "Pemenang otomatis dari skor.");
 
   return `
     <div class="ko-card ${koStageClass(id)}">
@@ -990,33 +899,209 @@ function buildExportTables(){
 }
 
 function exportExcel(){
-  const html = `<!doctype html><html><head><meta charset="utf-8"><style>body{font-family:Arial,sans-serif} table{border-collapse:collapse;margin-bottom:18px} th{background:#d9eaf7;font-weight:bold} th,td{padding:6px 8px;border:1px solid #333}</style></head><body><h1>Data Nobar World Cup 2026</h1>${buildExportTables()}</body></html>`;
-  const blob = new Blob([html], {type:"application/vnd.ms-excel;charset=utf-8"});
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = "data-nobar-worldcup-2026.xls";
-  a.click();
-  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
-}
+  const html = `<!doctype html><html><head><meta charset="utf-8"><style>body{font-family:Arial,sans-serif} table{border-collapse:collapse;margin-bottom:18px} th{background:#d9eaf7;font-weight:bold} th,td{padding:6px 8px;border:1px solid #333}</style></head><body><h1>Data Nobar World Cup 2026</h1>${buildExportTables()}<script>
+(function(){
+  const KO_MATCH_INFO_PATCH = {
+    M73:{date:"2026-06-28T12:00:00-07:00", venue:"Los Angeles Stadium"},
+    M74:{date:"2026-06-29T16:30:00-04:00", venue:"Boston Stadium"},
+    M75:{date:"2026-06-29T19:00:00-06:00", venue:"Monterrey Stadium"},
+    M76:{date:"2026-06-29T12:00:00-05:00", venue:"Houston Stadium"},
+    M77:{date:"2026-06-30T17:00:00-04:00", venue:"New York New Jersey Stadium"},
+    M78:{date:"2026-06-30T12:00:00-05:00", venue:"Dallas Stadium"},
+    M79:{date:"2026-06-30T19:00:00-06:00", venue:"Mexico City Stadium"},
+    M80:{date:"2026-07-01T12:00:00-04:00", venue:"Atlanta Stadium"},
+    M81:{date:"2026-07-01T17:00:00-07:00", venue:"San Francisco Bay Area Stadium"},
+    M82:{date:"2026-07-01T13:00:00-07:00", venue:"Seattle Stadium"},
+    M83:{date:"2026-07-02T19:00:00-04:00", venue:"Toronto Stadium"},
+    M84:{date:"2026-07-02T12:00:00-07:00", venue:"Los Angeles Stadium"},
+    M85:{date:"2026-07-02T20:00:00-07:00", venue:"Vancouver Stadium"},
+    M86:{date:"2026-07-03T18:00:00-04:00", venue:"Miami Stadium"},
+    M87:{date:"2026-07-03T20:30:00-05:00", venue:"Kansas City Stadium"},
+    M88:{date:"2026-07-03T13:00:00-05:00", venue:"Dallas Stadium"},
+    M89:{date:"2026-07-04T17:00:00-04:00", venue:"16 Besar"},
+    M90:{date:"2026-07-04T13:00:00-04:00", venue:"16 Besar"},
+    M91:{date:"2026-07-05T16:00:00-04:00", venue:"16 Besar"},
+    M92:{date:"2026-07-05T20:00:00-04:00", venue:"16 Besar"},
+    M93:{date:"2026-07-06T15:00:00-04:00", venue:"16 Besar"},
+    M94:{date:"2026-07-06T20:00:00-04:00", venue:"16 Besar"},
+    M95:{date:"2026-07-07T12:00:00-04:00", venue:"16 Besar"},
+    M96:{date:"2026-07-07T16:00:00-04:00", venue:"16 Besar"},
+    M97:{date:"2026-07-09T16:00:00-04:00", venue:"Perempat final"},
+    M98:{date:"2026-07-10T15:00:00-04:00", venue:"Perempat final"},
+    M99:{date:"2026-07-11T17:00:00-04:00", venue:"Perempat final"},
+    M100:{date:"2026-07-11T21:00:00-04:00", venue:"Perempat final"},
+    M101:{date:"2026-07-14T15:00:00-04:00", venue:"Semifinal"},
+    M102:{date:"2026-07-15T15:00:00-04:00", venue:"Semifinal"},
+    M103:{date:"2026-07-18T17:00:00-04:00", venue:"Perebutan juara 3"},
+    M104:{date:"2026-07-19T15:00:00-04:00", venue:"Final"}
+  };
 
-function printStyles(){
-  return `
-    body{font-family:Segoe UI,Arial,sans-serif;margin:20px;color:#111;background:#fff}
-    h1,h2,h3{margin:0 0 10px}.print-note{margin:0 0 18px;color:#555}
-    table{border-collapse:collapse;width:100%;margin:0 0 18px;font-size:12px}th,td{border:1px solid #999;padding:6px 8px;text-align:left}th{background:#eef3f8}
-    .bracket-board{min-width:1450px;background:#fff;border:1px solid #ddd;border-radius:14px;padding:16px}.bracket-title{display:grid;grid-template-columns:1fr 250px 1fr;align-items:center;gap:12px}.bracket-title h3{text-align:center}.right{text-align:right}
-    .bracket-grid{display:grid;grid-template-columns:210px 210px 210px 210px 250px 210px 210px 210px 210px;gap:12px;align-items:stretch}.round-col,.final-col{display:flex;flex-direction:column;gap:10px;justify-content:center}.round-col h4{text-align:center}.round-stack{display:flex;flex-direction:column;gap:10px;justify-content:space-around;flex:1}.ko-card{border:1px solid #777;border-radius:10px;padding:8px;break-inside:avoid}.ko-label{font-size:10px;font-weight:bold;margin-bottom:5px;display:flex;justify-content:space-between;gap:6px}.ko-row{display:grid;grid-template-columns:1fr 36px;gap:4px;margin-top:4px}.ko-team{background:#f2f2f2;border-radius:6px;padding:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ko-score{border:1px solid #888;border-radius:6px;text-align:center;padding:4px}.ko-auto{font-size:10px;margin-top:6px}.flag-img{width:22px;height:15px;object-fit:cover;vertical-align:middle;margin-right:4px}.team-display{display:inline-flex;align-items:center;gap:5px}.trophy-box{text-align:center;border:1px solid #aaa;border-radius:10px;padding:10px}.big{font-size:42px}
-    @page{size:landscape;margin:10mm}
-  `;
-}
-
-function openPrintWindow(title, bodyHtml){
-  const win = window.open("", "_blank");
-  if (!win){
-    alert("Popup cetak diblokir browser. Izinkan popup, lalu coba lagi.");
-    return;
+  function shortWitPatch(iso){
+    return new Intl.DateTimeFormat("id-ID", {
+      timeZone:"Asia/Jayapura",
+      weekday:"short",
+      day:"2-digit",
+      month:"short",
+      hour:"2-digit",
+      minute:"2-digit"
+    }).format(new Date(iso)).replaceAll(".", ":") + " WIT";
   }
-  win.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>${safeText(title)}</title><style>${printStyles()}</style></head><body>${bodyHtml}<script>window.onload=function(){setTimeout(function(){window.focus();window.print();},400)}<\/script></body></html>`);
+
+  function koSchedulePatch(id){
+    const info = KO_MATCH_INFO_PATCH[id];
+    if (!info) return "Jadwal resmi FIFA";
+    return `${shortWitPatch(info.date)}${info.venue ? " • " + info.venue : ""}`;
+  }
+
+  function initIconButtonsPatch(){
+    const mobile = el("mobileModeToggle");
+    if (mobile) {
+      mobile.textContent = "📱";
+      mobile.title = "Mode HP Anak";
+      mobile.setAttribute("aria-label", "Mode HP Anak");
+      mobile.classList.add("icon-btn");
+    }
+    const print = el("printBtn") || el("print");
+    if (print) {
+      print.textContent = "🖨️";
+      print.title = "Cetak/PDF";
+      print.setAttribute("aria-label", "Cetak atau simpan PDF");
+      print.classList.add("icon-btn");
+    }
+    document.querySelectorAll("header.top button, header.topbar button").forEach(btn => {
+      if ((btn.textContent || "").trim().toLowerCase() === "refresh") {
+        btn.textContent = "🔄";
+        btn.title = "Refresh";
+        btn.setAttribute("aria-label", "Refresh");
+        btn.classList.add("icon-btn");
+      }
+    });
+    const headerActions = document.querySelector("header.top > div:last-child, header.topbar > div:last-child");
+    if (headerActions) headerActions.classList.add("top-actions");
+  }
+
+  scoreDraft = function(id, key, value){
+    const match = state.matches.find(x => x.id === id);
+    if (!match) return;
+    match[key] = cleanScoreValue(value);
+  };
+
+  saveMatchScore = function(id){
+    const match = state.matches.find(x => x.id === id);
+    if (!match) return;
+    const homeInput = document.querySelector(`[data-score-id="${id}"][data-score-key="hs"]`);
+    const awayInput = document.querySelector(`[data-score-id="${id}"][data-score-key="as"]`);
+    if (homeInput) match.hs = cleanScoreValue(homeInput.value);
+    if (awayInput) match.as = cleanScoreValue(awayInput.value);
+    updateKO();
+    save();
+    const btn = document.querySelector(`[data-save-match="${id}"]`);
+    if (btn) {
+      const old = btn.textContent;
+      btn.textContent = "✅";
+      setTimeout(() => { btn.textContent = old || "💾"; }, 900);
+    }
+  };
+
+  score = function(id, key, value){
+    scoreDraft(id, key, value);
+    updateKO();
+    save();
+  };
+
+  renderMatches = function(){
+    const filterGroup = el("filterGroup") || el("matchGroupFilter");
+    const filterMatch = el("filterMatch") || el("matchStatusFilter");
+    const matchList = el("matchList");
+    if (!matchList) return;
+
+    if (filterGroup && filterGroup.options.length < 2){
+      Object.keys(groups).forEach(group => filterGroup.add(new Option("Grup " + group, group)));
+    }
+
+    const fg = filterGroup ? filterGroup.value : "all";
+    const fm = filterMatch ? filterMatch.value : "all";
+
+    matchList.innerHTML = state.matches
+      .filter(match => fg === "all" || match.group === fg)
+      .filter(match =>
+        fm === "all" ||
+        (fm === "done" && match.hs !== "" && match.as !== "") ||
+        (fm === "pending" && (match.hs === "" || match.as === ""))
+      )
+      .map(match => `
+        <div class="match match-card">
+          <div class="meta match-meta">
+            <span>Match ${match.matchNo || match.id} • ${match.stage} • Grup ${match.group}${match.venue ? " • " + safeText(match.venue) : ""}</span>
+            <span>${wit(match.date)}</span>
+          </div>
+          <div class="vs match-teams">
+            <div class="sideTeam match-side"><h4>${fmt(match.home)}</h4></div>
+            <div class="score score-box score-box-save">
+              <input data-score-id="${match.id}" data-score-key="hs" type="number" inputmode="numeric" min="0" value="${safeText(match.hs)}" oninput="scoreDraft('${match.id}','hs',this.value)" aria-label="Skor ${safeText(match.home)}">
+              <span class="vst vsText">VS</span>
+              <button class="score-save" data-save-match="${match.id}" onclick="saveMatchScore('${match.id}')" title="Simpan skor" aria-label="Simpan skor">💾</button>
+              <input data-score-id="${match.id}" data-score-key="as" type="number" inputmode="numeric" min="0" value="${safeText(match.as)}" oninput="scoreDraft('${match.id}','as',this.value)" aria-label="Skor ${safeText(match.away)}">
+            </div>
+            <div class="sideTeam match-side"><h4>${fmt(match.away)}</h4></div>
+          </div>
+        </div>
+      `).join("");
+  };
+
+  koCard = function(id){
+    const k = ensureKO(id);
+    const ready = isActualTeam(k.a) && isActualTeam(k.b);
+    const tied = ready && k.as !== "" && k.bs !== "" && Number(k.as) === Number(k.bs);
+    const statusClass = k.winner ? "ok" : (tied ? "warn" : "");
+    const statusText = k.winner ? `Lolos: ${fmt(k.winner)}` : koSchedulePatch(id);
+
+    return `
+      <div class="ko-card ${koStageClass(id)}">
+        <div class="ko-label"><span>${id}</span><span>${matchLabel(id)}</span></div>
+        <div class="ko-row">
+          <div class="ko-team">${fmt(k.a)}</div>
+          <input class="ko-score" type="number" inputmode="numeric" min="0" value="${safeText(k.as)}" onchange="koScore('${id}','as',this.value)" ${ready ? "" : "disabled"}>
+        </div>
+        <div class="ko-row">
+          <div class="ko-team">${fmt(k.b)}</div>
+          <input class="ko-score" type="number" inputmode="numeric" min="0" value="${safeText(k.bs)}" onchange="koScore('${id}','bs',this.value)" ${ready ? "" : "disabled"}>
+        </div>
+        <div class="ko-auto ${statusClass}">${tied ? "Skor imbang. Isi skor akhir yang menghasilkan pemenang." : statusText}</div>
+      </div>
+    `;
+  };
+
+  const previousJump = jump;
+  jump = function(id){
+    previousJump(id);
+    document.querySelectorAll(".page").forEach(page => {
+      const active = page.id === id;
+      page.classList.toggle("active", active);
+      page.hidden = !active;
+      page.style.display = active ? "block" : "none";
+    });
+    setTimeout(() => window.scrollTo({top:0, behavior:"smooth"}), 20);
+  };
+
+  window.scoreDraft = scoreDraft;
+  window.saveMatchScore = saveMatchScore;
+  window.koCard = koCard;
+  window.renderMatches = renderMatches;
+  window.jump = jump;
+
+  initIconButtonsPatch();
+  document.querySelectorAll(".page").forEach(page => {
+    const active = page.classList.contains("active");
+    page.hidden = !active;
+    page.style.display = active ? "block" : "none";
+  });
+  render();
+})();
+
+
+
+window.onload=function(){setTimeout(function(){window.focus();window.print();},400)}<\/script></body></html>`);
   win.document.close();
 }
 
@@ -1041,11 +1126,7 @@ function toggleKidMode(){
 
 function updateKidModeButton(){
   [el("mobileModeToggle"), el("kidModeBtn")].filter(Boolean).forEach(btn => {
-    const active = document.body.classList.contains("kid-mode");
-    btn.textContent = active ? "📱✅" : "📱";
-    btn.title = active ? "Mode HP Anak aktif" : "Aktifkan Mode HP Anak";
-    btn.setAttribute("aria-label", btn.title);
-    btn.classList.toggle("active", active);
+    btn.textContent = document.body.classList.contains("kid-mode") ? "Mode HP: ON" : "Mode HP Anak";
   });
 }
 
@@ -1150,4 +1231,5 @@ const initialActivePage = (() => {
 render();
 bindNavigation();
 jump(initialActivePage);
+
 
