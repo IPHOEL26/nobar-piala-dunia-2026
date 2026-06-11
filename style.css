@@ -486,3 +486,37 @@ label{display:block;margin:11px 0;color:#c7d7ee;font-weight:800}
     color:#111;
   }
 }
+
+
+/* =====================================================
+   PATCH NAVIGASI HP - halaman aktif dipaksa tampil
+===================================================== */
+body:not(.is-printing) .page{
+  display:none !important;
+}
+
+body:not(.is-printing) .page.active{
+  display:block !important;
+}
+
+body:not(.is-printing) .page[hidden]{
+  display:none !important;
+}
+
+.nav,
+.nav-btn{
+  touch-action:manipulation;
+  -webkit-tap-highlight-color:rgba(56,217,255,.25);
+}
+
+@media(max-width:700px){
+  .side{
+    overscroll-behavior-x:contain;
+    -webkit-overflow-scrolling:touch;
+  }
+
+  .nav,
+  .nav-btn{
+    flex:0 0 auto;
+  }
+}
