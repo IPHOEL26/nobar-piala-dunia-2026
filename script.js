@@ -28,8 +28,8 @@ const pageName = {
   data:"Data", settings:"Data"
 };
 
-const STORAGE_KEY = "wc26-iphoel-auto-v6";
-const OLD_KEYS = ["wc26-iphoel-bracket-v5", "wc26-iphoel-bracket-v3"];
+const STORAGE_KEY = "wc26-iphoel-auto-v7-official-schedule";
+const OLD_KEYS = ["wc26-iphoel-auto-v6", "wc26-iphoel-bracket-v5", "wc26-iphoel-bracket-v3"];
 
 function el(id){ return document.getElementById(id); }
 
@@ -44,8 +44,8 @@ function safeText(value){
 
 function jsSafe(value){
   return String(value ?? "")
-    .replaceAll("\\","\\\\")
-    .replaceAll("'","\\'");
+    .replaceAll("\\", "\\\\")
+    .replaceAll("'", "\\'");
 }
 
 function flag(team){
@@ -67,30 +67,102 @@ function cleanScoreValue(value){
   return String(Math.floor(n));
 }
 
+function officialDate(localDate, localTime, utcOffset){
+  return `${localDate}T${localTime}:00${utcOffset}`;
+}
+
+function makeOfficialMatch(matchNo, group, localDate, localTime, utcOffset, home, away, venue=""){
+  return {
+    id:`M${matchNo}`,
+    matchNo,
+    stage:"Fase Grup",
+    group,
+    date:officialDate(localDate, localTime, utcOffset),
+    home,
+    away,
+    venue,
+    hs:"",
+    as:""
+  };
+}
+
 function makeMatches(){
-  const pairs = [[0,1],[2,3],[0,2],[1,3],[0,3],[1,2]];
-  const matches = [];
-  let n = 0;
-  const base = new Date("2026-06-11T20:00:00+09:00");
+  const matches = [
+    makeOfficialMatch(1,"A","2026-06-11","13:00","-06:00","Meksiko","Afrika Selatan","Mexico City Stadium"),
+    makeOfficialMatch(2,"A","2026-06-11","20:00","-06:00","Korea Selatan","Ceko","Guadalajara Stadium"),
+    makeOfficialMatch(3,"B","2026-06-12","15:00","-04:00","Kanada","Bosnia dan Herzegovina","Toronto Stadium"),
+    makeOfficialMatch(4,"D","2026-06-12","18:00","-07:00","Amerika Serikat","Paraguay","Los Angeles Stadium"),
+    makeOfficialMatch(5,"C","2026-06-13","21:00","-04:00","Haiti","Skotlandia","Boston Stadium"),
+    makeOfficialMatch(6,"D","2026-06-13","21:00","-07:00","Australia","Turki","Vancouver Stadium"),
+    makeOfficialMatch(7,"C","2026-06-13","18:00","-04:00","Brasil","Maroko","New York New Jersey Stadium"),
+    makeOfficialMatch(8,"B","2026-06-13","12:00","-07:00","Qatar","Swiss","San Francisco Bay Area Stadium"),
+    makeOfficialMatch(9,"E","2026-06-14","19:00","-04:00","Pantai Gading","Ekuador","Philadelphia Stadium"),
+    makeOfficialMatch(10,"E","2026-06-14","12:00","-05:00","Jerman","Curaçao","Houston Stadium"),
+    makeOfficialMatch(11,"F","2026-06-14","15:00","-05:00","Belanda","Jepang","Dallas Stadium"),
+    makeOfficialMatch(12,"F","2026-06-14","20:00","-06:00","Swedia","Tunisia","Monterrey Stadium"),
+    makeOfficialMatch(13,"H","2026-06-15","18:00","-04:00","Arab Saudi","Uruguay","Miami Stadium"),
+    makeOfficialMatch(14,"H","2026-06-15","12:00","-04:00","Spanyol","Cape Verde","Atlanta Stadium"),
+    makeOfficialMatch(15,"G","2026-06-15","18:00","-07:00","Iran","Selandia Baru","Los Angeles Stadium"),
+    makeOfficialMatch(16,"G","2026-06-15","12:00","-07:00","Belgia","Mesir","Seattle Stadium"),
+    makeOfficialMatch(17,"I","2026-06-16","15:00","-04:00","Prancis","Senegal","New York New Jersey Stadium"),
+    makeOfficialMatch(18,"I","2026-06-16","18:00","-04:00","Irak","Norwegia","Boston Stadium"),
+    makeOfficialMatch(19,"J","2026-06-16","20:00","-05:00","Argentina","Aljazair","Kansas City Stadium"),
+    makeOfficialMatch(20,"J","2026-06-16","21:00","-07:00","Austria","Yordania","San Francisco Bay Area Stadium"),
+    makeOfficialMatch(21,"L","2026-06-17","19:00","-04:00","Ghana","Panama","Toronto Stadium"),
+    makeOfficialMatch(22,"L","2026-06-17","15:00","-05:00","Inggris","Kroasia","Dallas Stadium"),
+    makeOfficialMatch(23,"K","2026-06-17","12:00","-05:00","Portugal","RD Kongo","Houston Stadium"),
+    makeOfficialMatch(24,"K","2026-06-17","20:00","-06:00","Uzbekistan","Kolombia","Mexico City Stadium"),
+    makeOfficialMatch(25,"A","2026-06-18","12:00","-04:00","Ceko","Afrika Selatan","Atlanta Stadium"),
+    makeOfficialMatch(26,"B","2026-06-18","12:00","-07:00","Swiss","Bosnia dan Herzegovina","Los Angeles Stadium"),
+    makeOfficialMatch(27,"B","2026-06-18","15:00","-07:00","Kanada","Qatar","Vancouver Stadium"),
+    makeOfficialMatch(28,"A","2026-06-18","19:00","-06:00","Meksiko","Korea Selatan","Guadalajara Stadium"),
+    makeOfficialMatch(29,"C","2026-06-19","20:30","-04:00","Brasil","Haiti","Philadelphia Stadium"),
+    makeOfficialMatch(30,"C","2026-06-19","18:00","-04:00","Skotlandia","Maroko","Boston Stadium"),
+    makeOfficialMatch(31,"D","2026-06-19","20:00","-07:00","Turki","Paraguay","San Francisco Bay Area Stadium"),
+    makeOfficialMatch(32,"D","2026-06-19","12:00","-07:00","Amerika Serikat","Australia","Seattle Stadium"),
+    makeOfficialMatch(33,"E","2026-06-20","16:00","-04:00","Jerman","Pantai Gading","Toronto Stadium"),
+    makeOfficialMatch(34,"E","2026-06-20","19:00","-05:00","Ekuador","Curaçao","Kansas City Stadium"),
+    makeOfficialMatch(35,"F","2026-06-20","12:00","-05:00","Belanda","Swedia","Houston Stadium"),
+    makeOfficialMatch(36,"F","2026-06-20","22:00","-06:00","Tunisia","Jepang","Monterrey Stadium"),
+    makeOfficialMatch(37,"H","2026-06-21","18:00","-04:00","Uruguay","Cape Verde","Miami Stadium"),
+    makeOfficialMatch(38,"H","2026-06-21","12:00","-04:00","Spanyol","Arab Saudi","Atlanta Stadium"),
+    makeOfficialMatch(39,"G","2026-06-21","12:00","-07:00","Belgia","Iran","Los Angeles Stadium"),
+    makeOfficialMatch(40,"G","2026-06-21","18:00","-07:00","Selandia Baru","Mesir","Vancouver Stadium"),
+    makeOfficialMatch(41,"I","2026-06-22","20:00","-04:00","Norwegia","Senegal","New York New Jersey Stadium"),
+    makeOfficialMatch(42,"I","2026-06-22","17:00","-04:00","Prancis","Irak","Philadelphia Stadium"),
+    makeOfficialMatch(43,"J","2026-06-22","12:00","-05:00","Argentina","Austria","Dallas Stadium"),
+    makeOfficialMatch(44,"J","2026-06-22","20:00","-07:00","Yordania","Aljazair","San Francisco Bay Area Stadium"),
+    makeOfficialMatch(45,"L","2026-06-23","16:00","-04:00","Inggris","Ghana","Boston Stadium"),
+    makeOfficialMatch(46,"L","2026-06-23","19:00","-04:00","Panama","Kroasia","Toronto Stadium"),
+    makeOfficialMatch(47,"K","2026-06-23","12:00","-05:00","Portugal","Uzbekistan","Houston Stadium"),
+    makeOfficialMatch(48,"K","2026-06-23","20:00","-06:00","Kolombia","RD Kongo","Guadalajara Stadium"),
+    makeOfficialMatch(49,"C","2026-06-24","18:00","-04:00","Skotlandia","Brasil","Miami Stadium"),
+    makeOfficialMatch(50,"C","2026-06-24","18:00","-04:00","Maroko","Haiti","Atlanta Stadium"),
+    makeOfficialMatch(51,"B","2026-06-24","12:00","-07:00","Swiss","Kanada","Vancouver Stadium"),
+    makeOfficialMatch(52,"B","2026-06-24","12:00","-07:00","Bosnia dan Herzegovina","Qatar","Seattle Stadium"),
+    makeOfficialMatch(53,"A","2026-06-24","19:00","-06:00","Ceko","Meksiko","Mexico City Stadium"),
+    makeOfficialMatch(54,"A","2026-06-24","19:00","-06:00","Afrika Selatan","Korea Selatan","Monterrey Stadium"),
+    makeOfficialMatch(55,"E","2026-06-25","16:00","-04:00","Curaçao","Pantai Gading","Philadelphia Stadium"),
+    makeOfficialMatch(56,"E","2026-06-25","16:00","-04:00","Ekuador","Jerman","New York New Jersey Stadium"),
+    makeOfficialMatch(57,"F","2026-06-25","18:00","-05:00","Jepang","Swedia","Dallas Stadium"),
+    makeOfficialMatch(58,"F","2026-06-25","18:00","-05:00","Tunisia","Belanda","Kansas City Stadium"),
+    makeOfficialMatch(59,"D","2026-06-25","19:00","-07:00","Turki","Amerika Serikat","Los Angeles Stadium"),
+    makeOfficialMatch(60,"D","2026-06-25","19:00","-07:00","Paraguay","Australia","San Francisco Bay Area Stadium"),
+    makeOfficialMatch(61,"I","2026-06-26","15:00","-04:00","Norwegia","Prancis","Boston Stadium"),
+    makeOfficialMatch(62,"I","2026-06-26","15:00","-04:00","Senegal","Irak","Toronto Stadium"),
+    makeOfficialMatch(63,"G","2026-06-26","20:00","-07:00","Mesir","Iran","Seattle Stadium"),
+    makeOfficialMatch(64,"G","2026-06-26","20:00","-07:00","Selandia Baru","Belgia","Vancouver Stadium"),
+    makeOfficialMatch(65,"H","2026-06-26","19:00","-05:00","Cape Verde","Arab Saudi","Houston Stadium"),
+    makeOfficialMatch(66,"H","2026-06-26","18:00","-06:00","Uruguay","Spanyol","Guadalajara Stadium"),
+    makeOfficialMatch(67,"L","2026-06-27","17:00","-04:00","Panama","Inggris","New York New Jersey Stadium"),
+    makeOfficialMatch(68,"L","2026-06-27","17:00","-04:00","Kroasia","Ghana","Philadelphia Stadium"),
+    makeOfficialMatch(69,"J","2026-06-27","21:00","-05:00","Aljazair","Austria","Kansas City Stadium"),
+    makeOfficialMatch(70,"J","2026-06-27","21:00","-05:00","Yordania","Argentina","Dallas Stadium"),
+    makeOfficialMatch(71,"K","2026-06-27","19:30","-04:00","Kolombia","Portugal","Miami Stadium"),
+    makeOfficialMatch(72,"K","2026-06-27","19:30","-04:00","RD Kongo","Uzbekistan","Atlanta Stadium")
+  ];
 
-  Object.entries(groups).forEach(([group, teams]) => {
-    pairs.forEach((pair, i) => {
-      const d = new Date(base.getTime() + n * 6 * 3600000);
-      matches.push({
-        id:`G${group}-${i+1}`,
-        stage:"Fase Grup",
-        group,
-        date:d.toISOString(),
-        home:teams[pair[0]],
-        away:teams[pair[1]],
-        hs:"",
-        as:""
-      });
-      n++;
-    });
-  });
-
-  return matches;
+  return matches.sort((a,b) => new Date(a.date) - new Date(b.date) || a.matchNo - b.matchNo);
 }
 
 function makeKOIds(){
@@ -122,8 +194,26 @@ function normalizeState(raw){
   });
 
   const freshMatches = makeMatches();
-  const byId = Object.fromEntries(state.matches.map(m => [m.id, m]));
-  state.matches = freshMatches.map(m => ({...m, hs:cleanScoreValue(byId[m.id]?.hs ?? ""), as:cleanScoreValue(byId[m.id]?.as ?? "")}));
+  const oldMatches = Array.isArray(state.matches) ? state.matches : [];
+  const byId = Object.fromEntries(oldMatches.map(m => [m.id, m]));
+  const byPair = new Map();
+  const byReversePair = new Map();
+
+  oldMatches.forEach(m => {
+    if (!m || !m.group || !m.home || !m.away) return;
+    byPair.set(`${m.group}|${m.home}|${m.away}`, m);
+    byReversePair.set(`${m.group}|${m.away}|${m.home}`, m);
+  });
+
+  state.matches = freshMatches.map(m => {
+    const same = byId[m.id] || byPair.get(`${m.group}|${m.home}|${m.away}`);
+    if (same) return {...m, hs:cleanScoreValue(same.hs ?? ""), as:cleanScoreValue(same.as ?? "")};
+
+    const reversed = byReversePair.get(`${m.group}|${m.home}|${m.away}`);
+    if (reversed) return {...m, hs:cleanScoreValue(reversed.as ?? ""), as:cleanScoreValue(reversed.hs ?? "")};
+
+    return m;
+  });
 
   makeKOIds().forEach(id => {
     if (!state.knockout[id]) state.knockout[id] = {a:"", b:"", as:"", bs:"", winner:"", loser:""};
@@ -157,15 +247,63 @@ function wit(iso){
 }
 
 function jump(id){
-  document.querySelectorAll(".page").forEach(page => page.classList.remove("active"));
-  const page = el(id);
-  if (page) page.classList.add("active");
-  document.querySelectorAll(".nav, .nav-btn").forEach(btn => btn.classList.toggle("active", btn.dataset.page === id));
+  const aliases = {
+    dashboard:"home",
+    knockout:"bracket",
+    nobar:"watch",
+    settings:"data"
+  };
+
+  const pageId = aliases[id] || id || "home";
+  const target = el(pageId);
+  if (!target) return false;
+
+  document.querySelectorAll(".page").forEach(page => {
+    const active = page.id === pageId;
+    page.classList.toggle("active", active);
+    page.hidden = !active;
+    page.setAttribute("aria-hidden", active ? "false" : "true");
+    page.style.display = active ? "block" : "none";
+  });
+
+  document.querySelectorAll(".nav, .nav-btn").forEach(btn => {
+    btn.classList.toggle("active", btn.dataset.page === pageId || aliases[btn.dataset.page] === pageId);
+    if (btn.tagName === "BUTTON") btn.type = "button";
+  });
+
   const title = el("title") || el("pageTitle");
-  if (title) title.textContent = pageName[id] || "Dashboard";
+  if (title) title.textContent = pageName[pageId] || pageName[id] || "Dashboard";
+
+  try{
+    sessionStorage.setItem("wc26-active-page", pageId);
+  }catch{}
+
+  window.scrollTo(0, 0);
+  return false;
 }
 
-document.querySelectorAll(".nav, .nav-btn").forEach(btn => { btn.onclick = () => jump(btn.dataset.page); });
+function bindNavigation(){
+  document.querySelectorAll(".nav, .nav-btn").forEach(btn => {
+    if (btn.tagName === "BUTTON") btn.type = "button";
+    btn.onclick = function(event){
+      if (event){
+        event.preventDefault();
+        event.stopPropagation();
+      }
+      return jump(btn.dataset.page || "home");
+    };
+  });
+}
+
+bindNavigation();
+
+document.addEventListener("click", function(event){
+  const btn = event.target.closest(".nav, .nav-btn");
+  if (!btn) return;
+  event.preventDefault();
+  event.stopPropagation();
+  jump(btn.dataset.page || "home");
+}, true);
 
 function groupMatches(group){ return state.matches.filter(match => match.group === group); }
 function groupComplete(group){ return groupMatches(group).every(match => match.hs !== "" && match.as !== ""); }
@@ -518,7 +656,7 @@ function renderMatches(){
     .map(match => `
       <div class="match match-card">
         <div class="meta match-meta">
-          <span>${match.stage} • Grup ${match.group}</span>
+          <span>Match ${match.matchNo || match.id} • ${match.stage} • Grup ${match.group}${match.venue ? " • " + safeText(match.venue) : ""}</span>
           <span>${wit(match.date)}</span>
         </div>
         <div class="vs match-teams">
@@ -657,6 +795,174 @@ if (watchForm){
 
 window.delWatch = function(index){ state.watch.splice(index,1); save(); };
 
+
+function resetMatchesByGroup(groupValue){
+  const label = groupValue && groupValue !== "all" ? `Grup ${groupValue}` : "semua fase grup";
+  if (!confirm(`Reset skor ${label}? Bagan gugur juga akan dikosongkan supaya tetap sesuai klasemen terbaru.`)) return;
+
+  state.matches.forEach(match => {
+    if (!groupValue || groupValue === "all" || match.group === groupValue){
+      match.hs = "";
+      match.as = "";
+    }
+  });
+
+  clearKnockoutFrom(73);
+  updateKO();
+  save();
+}
+
+function resetCurrentGroupMatches(){
+  const filterGroup = el("filterGroup") || el("matchGroupFilter");
+  resetMatchesByGroup(filterGroup ? filterGroup.value : "all");
+}
+
+function clearKnockoutFrom(startNumber){
+  makeKOIds().forEach(id => {
+    const number = Number(id.replace("M", ""));
+    if (number >= startNumber){
+      const k = ensureKO(id);
+      k.as = "";
+      k.bs = "";
+      k.winner = "";
+      k.loser = "";
+    }
+  });
+}
+
+function resetKnockoutStage(stage){
+  const config = {
+    r32:{start:73, label:"32 Besar"},
+    r16:{start:89, label:"16 Besar"},
+    qf:{start:97, label:"Perempat Final"},
+    sf:{start:101, label:"Semifinal"},
+    finals:{start:103, label:"Final dan perebutan tempat ketiga"},
+    knockout:{start:73, label:"seluruh bagan gugur"}
+  }[stage];
+
+  if (!config) return;
+  if (!confirm(`Reset skor ${config.label}? Babak setelahnya juga dikosongkan agar alur pemenang tetap benar.`)) return;
+
+  clearKnockoutFrom(config.start);
+  updateKO();
+  save();
+}
+
+function resetAllData(){
+  if (confirm("Reset semua data skor, favorit, bagan, dan agenda nobar?")){
+    state = newState();
+    save();
+  }
+}
+
+function plainTeam(team){ return String(team || "").replace(/<[^>]*>/g, ""); }
+
+function htmlCell(value){ return safeText(value === undefined || value === null ? "" : value); }
+
+function tableHtml(title, headers, rows){
+  return `
+    <h2>${htmlCell(title)}</h2>
+    <table border="1">
+      <thead><tr>${headers.map(h => `<th>${htmlCell(h)}</th>`).join("")}</tr></thead>
+      <tbody>${rows.map(row => `<tr>${row.map(cell => `<td>${htmlCell(cell)}</td>`).join("")}</tr>`).join("")}</tbody>
+    </table><br>`;
+}
+
+function buildExportTables(){
+  updateKO();
+  const st = standings();
+  const parts = [];
+
+  Object.keys(groups).forEach(group => {
+    parts.push(tableHtml(`Klasemen Grup ${group}`, ["Pos", "Tim", "Main", "Menang", "Seri", "Kalah", "Gol Masuk", "Gol Kemasukan", "Selisih", "Poin"],
+      st[group].map((row, i) => [i+1, row.team, row.p, row.w, row.d, row.l, row.gf, row.ga, row.gd, row.pts])
+    ));
+  });
+
+  parts.push(tableHtml("Jadwal dan Skor Fase Grup", ["Match", "Grup", "Tanggal WIT", "Venue", "Tim Kandang", "Skor", "Tim Tandang", "Skor"],
+    state.matches.map(match => [match.matchNo || match.id, match.group, wit(match.date), match.venue || "", match.home, match.hs, match.away, match.as])
+  ));
+
+  parts.push(tableHtml("Bagan Gugur", ["Match", "Label", "Tim A", "Skor A", "Tim B", "Skor B", "Pemenang"],
+    makeKOIds().map(id => {
+      const k = ensureKO(id);
+      return [id, matchLabel(id), k.a, k.as, k.b, k.bs, k.winner];
+    })
+  ));
+
+  parts.push(tableHtml("Agenda Nobar", ["Judul", "Tanggal/Jam", "Lokasi", "Catatan"],
+    state.watch.map(item => [item.title, item.date ? new Date(item.date).toLocaleString("id-ID") + " WIT" : "", item.place, item.note])
+  ));
+
+  return parts.join("\n");
+}
+
+function exportExcel(){
+  const html = `<!doctype html><html><head><meta charset="utf-8"><style>body{font-family:Arial,sans-serif} table{border-collapse:collapse;margin-bottom:18px} th{background:#d9eaf7;font-weight:bold} th,td{padding:6px 8px;border:1px solid #333}</style></head><body><h1>Data Nobar World Cup 2026</h1>${buildExportTables()}</body></html>`;
+  const blob = new Blob([html], {type:"application/vnd.ms-excel;charset=utf-8"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "data-nobar-worldcup-2026.xls";
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}
+
+function printStyles(){
+  return `
+    body{font-family:Segoe UI,Arial,sans-serif;margin:20px;color:#111;background:#fff}
+    h1,h2,h3{margin:0 0 10px}.print-note{margin:0 0 18px;color:#555}
+    table{border-collapse:collapse;width:100%;margin:0 0 18px;font-size:12px}th,td{border:1px solid #999;padding:6px 8px;text-align:left}th{background:#eef3f8}
+    .bracket-board{min-width:1450px;background:#fff;border:1px solid #ddd;border-radius:14px;padding:16px}.bracket-title{display:grid;grid-template-columns:1fr 250px 1fr;align-items:center;gap:12px}.bracket-title h3{text-align:center}.right{text-align:right}
+    .bracket-grid{display:grid;grid-template-columns:210px 210px 210px 210px 250px 210px 210px 210px 210px;gap:12px;align-items:stretch}.round-col,.final-col{display:flex;flex-direction:column;gap:10px;justify-content:center}.round-col h4{text-align:center}.round-stack{display:flex;flex-direction:column;gap:10px;justify-content:space-around;flex:1}.ko-card{border:1px solid #777;border-radius:10px;padding:8px;break-inside:avoid}.ko-label{font-size:10px;font-weight:bold;margin-bottom:5px;display:flex;justify-content:space-between;gap:6px}.ko-row{display:grid;grid-template-columns:1fr 36px;gap:4px;margin-top:4px}.ko-team{background:#f2f2f2;border-radius:6px;padding:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ko-score{border:1px solid #888;border-radius:6px;text-align:center;padding:4px}.ko-auto{font-size:10px;margin-top:6px}.flag-img{width:22px;height:15px;object-fit:cover;vertical-align:middle;margin-right:4px}.team-display{display:inline-flex;align-items:center;gap:5px}.trophy-box{text-align:center;border:1px solid #aaa;border-radius:10px;padding:10px}.big{font-size:42px}
+    @page{size:landscape;margin:10mm}
+  `;
+}
+
+function openPrintWindow(title, bodyHtml){
+  const win = window.open("", "_blank");
+  if (!win){
+    alert("Popup cetak diblokir browser. Izinkan popup, lalu coba lagi.");
+    return;
+  }
+  win.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>${safeText(title)}</title><style>${printStyles()}</style></head><body>${bodyHtml}<script>window.onload=function(){setTimeout(function(){window.focus();window.print();},400)}<\/script></body></html>`);
+  win.document.close();
+}
+
+function printReport(){
+  const body = `<h1>Data Nobar World Cup 2026</h1><p class="print-note">Gunakan menu Print lalu pilih Save as PDF bila ingin menyimpan sebagai PDF.</p>${buildExportTables()}`;
+  openPrintWindow("Data Nobar World Cup 2026", body);
+}
+
+function printBracket(){
+  updateKO();
+  renderBracket();
+  const bracketBox = el("bracketBox") || el("bracketWrap");
+  const body = `<h1>Bagan Gugur World Cup 2026</h1><p class="print-note">Mode cetak bagan. Pilih Save as PDF pada dialog print bila ingin ekspor PDF.</p>${bracketBox ? bracketBox.innerHTML : ""}`;
+  openPrintWindow("Bagan Gugur World Cup 2026", body);
+}
+
+function toggleKidMode(){
+  document.body.classList.toggle("kid-mode");
+  localStorage.setItem("wc26-iphoel-kid-mode", document.body.classList.contains("kid-mode") ? "1" : "0");
+  updateKidModeButton();
+}
+
+function updateKidModeButton(){
+  [el("mobileModeToggle"), el("kidModeBtn")].filter(Boolean).forEach(btn => {
+    btn.textContent = document.body.classList.contains("kid-mode") ? "Mode HP: ON" : "Mode HP Anak";
+  });
+}
+
+if (localStorage.getItem("wc26-iphoel-kid-mode") === "1") document.body.classList.add("kid-mode");
+
+window.resetCurrentGroupMatches = resetCurrentGroupMatches;
+window.resetKnockoutStage = resetKnockoutStage;
+window.resetAllData = resetAllData;
+window.exportExcel = exportExcel;
+window.printReport = printReport;
+window.printBracket = printBracket;
+window.toggleKidMode = toggleKidMode;
+
 const backupBtn = el("backup") || el("downloadJson");
 if (backupBtn){
   backupBtn.onclick = function(){
@@ -682,14 +988,48 @@ if (restoreInput){
 }
 
 const resetBtn = el("resetAll");
-if (resetBtn){
-  resetBtn.onclick = function(){
-    if (confirm("Reset semua data?")){
-      state = newState();
-      save();
-    }
-  };
-}
+if (resetBtn) resetBtn.onclick = resetAllData;
+
+const resetVisibleGroupBtn = el("resetVisibleGroup");
+if (resetVisibleGroupBtn) resetVisibleGroupBtn.onclick = resetCurrentGroupMatches;
+
+const resetGroupScoresBtn = el("resetGroupScores");
+if (resetGroupScoresBtn) resetGroupScoresBtn.onclick = () => resetMatchesByGroup("all");
+
+const resetR32Btn = el("resetR32");
+if (resetR32Btn) resetR32Btn.onclick = () => resetKnockoutStage("r32");
+
+const resetR16Btn = el("resetR16");
+if (resetR16Btn) resetR16Btn.onclick = () => resetKnockoutStage("r16");
+
+const resetQFBtn = el("resetQF");
+if (resetQFBtn) resetQFBtn.onclick = () => resetKnockoutStage("qf");
+
+const resetSFBtn = el("resetSF");
+if (resetSFBtn) resetSFBtn.onclick = () => resetKnockoutStage("sf");
+
+const resetFinalsBtn = el("resetFinals");
+if (resetFinalsBtn) resetFinalsBtn.onclick = () => resetKnockoutStage("finals");
+
+const resetKnockoutTopBtn = el("resetKnockoutTop");
+if (resetKnockoutTopBtn) resetKnockoutTopBtn.onclick = () => resetKnockoutStage("knockout");
+
+const exportExcelBtn = el("exportExcel");
+if (exportExcelBtn) exportExcelBtn.onclick = exportExcel;
+
+const printReportBtn = el("printReportBtn");
+if (printReportBtn) printReportBtn.onclick = printReport;
+
+const printBracketBtn = el("printBracketBtn");
+if (printBracketBtn) printBracketBtn.onclick = printBracket;
+
+const printBracketTopBtn = el("printBracketTop");
+if (printBracketTopBtn) printBracketTopBtn.onclick = printBracket;
+
+[el("mobileModeToggle"), el("kidModeBtn")].filter(Boolean).forEach(btn => {
+  btn.onclick = toggleKidMode;
+});
+updateKidModeButton();
 
 const searchTeam = el("searchTeam") || el("teamSearch");
 if (searchTeam) searchTeam.oninput = renderGroups;
@@ -700,6 +1040,18 @@ if (filterGroup) filterGroup.onchange = renderMatches;
 const filterMatch = el("filterMatch") || el("matchStatusFilter");
 if (filterMatch) filterMatch.onchange = renderMatches;
 const printBtn = el("print") || el("printBtn");
-if (printBtn) printBtn.onclick = () => window.print();
+if (printBtn) printBtn.onclick = printReport;
+
+
+const initialActivePage = (() => {
+  try{
+    const saved = sessionStorage.getItem("wc26-active-page");
+    if (saved && el(saved)) return saved;
+  }catch{}
+  return document.querySelector(".page.active")?.id || "home";
+})();
 
 render();
+bindNavigation();
+jump(initialActivePage);
+
