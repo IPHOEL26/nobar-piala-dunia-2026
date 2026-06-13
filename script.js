@@ -604,10 +604,14 @@ function renderGroups(){
           <h3>Grup ${group}</h3>
           <b>${complete ? "Klasemen Final" : "Klasemen Sementara"}</b>
         </div>
-        <div class="standings-head">
-          <span>Tim</span><span>MJ</span><span>M</span><span>S</span><span>K</span><span>GM</span><span>GK</span><span>SG</span><span>Poin</span><span>Fav</span>
+        <div class="standings-scroll" aria-label="Tabel klasemen Grup ${group}">
+          <div class="standings-table">
+            <div class="standings-head">
+              <span>Tim</span><span>MJ</span><span>M</span><span>S</span><span>K</span><span>GM</span><span>GK</span><span>SG</span><span>Poin</span><span>Fav</span>
+            </div>
+            ${rows.map((row,i) => teamRow(row,i+1)).join("")}
+          </div>
         </div>
-        ${rows.map((row,i) => teamRow(row,i+1)).join("")}
       </div>
     `;
   }).join("");
@@ -1143,5 +1147,4 @@ const initialActivePage = (() => {
 render();
 bindNavigation();
 jump(initialActivePage);
-
 
