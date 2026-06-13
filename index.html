@@ -912,6 +912,73 @@ input:focus,select:focus,textarea:focus{outline:2px solid rgba(87,183,238,.35);b
   }
 }
 
+
+
+/* =====================================================
+   PATCH KLASMEN HP: header dan baris geser serempak
+   Perubahan hanya untuk tabel Grup & Klasemen.
+===================================================== */
+.standings-scroll{
+  width:100%;
+  overflow-x:auto;
+  overflow-y:hidden;
+  -webkit-overflow-scrolling:touch;
+  overscroll-behavior-x:contain;
+}
+
+.standings-table{
+  width:100%;
+}
+
+.standings-table .standings-head,
+.standings-table .standing-row{
+  width:100%;
+  overflow:visible !important;
+}
+
+@media(max-width:700px){
+  .group,
+  .group-card{
+    overflow:hidden;
+  }
+
+  .standings-table{
+    min-width:520px;
+  }
+
+  .standings-table .standings-head,
+  .standings-table .standing-row{
+    min-width:520px;
+    grid-template-columns:minmax(150px,1.6fr) 42px 42px 42px 42px 56px 44px !important;
+    font-size:12px;
+    overflow:visible !important;
+  }
+
+  .standings-table .standings-head span:nth-child(6),
+  .standings-table .standings-head span:nth-child(7),
+  .standings-table .standings-head span:nth-child(8),
+  .standings-table .standing-row .standing-cell:nth-of-type(6),
+  .standings-table .standing-row .standing-cell:nth-of-type(7),
+  .standings-table .standing-row .standing-cell:nth-of-type(8){
+    display:none;
+  }
+
+  .standings-table .standing-row .standing-cell:nth-of-type(5){
+    display:block;
+  }
+
+  .standings-scroll .standing-team,
+  .standings-scroll .team-display{
+    min-width:0;
+  }
+
+  .standings-scroll .team-display span:last-child{
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -1701,10 +1768,14 @@ function renderGroups(){
           <h3>Grup ${group}</h3>
           <b>${complete ? "Klasemen Final" : "Klasemen Sementara"}</b>
         </div>
-        <div class="standings-head">
-          <span>Tim</span><span>MJ</span><span>M</span><span>S</span><span>K</span><span>GM</span><span>GK</span><span>SG</span><span>Poin</span><span>Fav</span>
+        <div class="standings-scroll" aria-label="Tabel klasemen Grup ${group}">
+          <div class="standings-table">
+            <div class="standings-head">
+              <span>Tim</span><span>MJ</span><span>M</span><span>S</span><span>K</span><span>GM</span><span>GK</span><span>SG</span><span>Poin</span><span>Fav</span>
+            </div>
+            ${rows.map((row,i) => teamRow(row,i+1)).join("")}
+          </div>
         </div>
-        ${rows.map((row,i) => teamRow(row,i+1)).join("")}
       </div>
     `;
   }).join("");
