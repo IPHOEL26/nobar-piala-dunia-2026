@@ -970,4 +970,75 @@ input:focus,select:focus,textarea:focus{outline:2px solid rgba(87,183,238,.35);b
     white-space:nowrap;
   }
 }
+/* =====================================================
+   PATCH KLASMEN HP V2: kolom Tim tetap, statistik digeser
+   Perubahan hanya untuk tabel Grup & Klasemen di HP.
+===================================================== */
+@media(max-width:700px){
+  .standings-scroll{
+    overflow-x:auto;
+    overflow-y:hidden;
+    -webkit-overflow-scrolling:touch;
+    overscroll-behavior-x:contain;
+    touch-action:pan-x;
+  }
+
+  .standings-table{
+    width:520px;
+    min-width:520px;
+  }
+
+  .standings-table .standings-head,
+  .standings-table .standing-row{
+    width:520px;
+    min-width:520px;
+    grid-template-columns:156px 46px 46px 46px 46px 58px 50px !important;
+    overflow:visible !important;
+  }
+
+  .standings-table .standings-head > span:first-child,
+  .standings-table .standing-row > .standing-team{
+    position:sticky;
+    left:0;
+    z-index:5;
+    min-width:156px;
+    max-width:156px;
+    display:flex;
+    align-items:center;
+    overflow:hidden;
+    padding-right:8px;
+    background:var(--panel);
+    box-shadow:10px 0 16px rgba(31,86,150,.12);
+  }
+
+  .standings-table .standings-head > span:first-child{
+    z-index:7;
+    background:#eaf5ff;
+  }
+
+  .standings-table .standing-row:nth-child(even) > .standing-team{
+    background:#f7fbff;
+  }
+
+  .standings-table .standing-row.favorite > .standing-team{
+    background:linear-gradient(0deg,rgba(255,210,77,.16),rgba(255,210,77,.16)),var(--panel);
+  }
+
+  .standings-table .standing-row > .standing-team .team-display{
+    max-width:118px;
+  }
+
+  .standings-table .standing-row > .standing-team .team-display span:last-child{
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+
+  .standings-table .standings-head span:not(:first-child),
+  .standings-table .standing-row .standing-cell,
+  .standings-table .standing-row .favorite-btn{
+    position:relative;
+    z-index:1;
+  }
+}
 
